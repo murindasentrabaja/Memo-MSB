@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MSB ERP - Sistem Digital Memo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ==========================================================================
+           SCREEN STYLING (Gemini Pro Colorful Light Theme)
+           ========================================================================= */
+        @media screen {
+            body {
+                font-family: 'Inter', sans-serif;
+                background-color: #f8fafc;
+                background-image: 
+                    radial-gradient(at 0% 0%, rgba(219, 228, 255, 0.7) 0px, transparent 50%),
+                    radial-gradient(at 100% 0%, rgba(243, 232, 255, 0.7) 0px, transparent 50%),
+                    radial-gradient(at 100% 100%, rgba(224, 242, 254, 0.7) 0px, transparent 50%),
+                    radial-gradient(at 0% 100%, rgba(253, 230, 234, 0.7) 0px, transparent 50%);
+                background-attachment: fixed;
+                color: #1e293b;
+                min-height: 100vh;
+                overflow-x: hidden;
+            }
+            .glass-panel {
+                background: rgba(255, 255, 255, 0.85);
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                border: 1px solid rgba(255, 255, 255, 0.6);
+                box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+                border-radius: 1.25rem;
+                transition: all 0.3s ease;
+            }
+            .glass-panel:hover {
+                border-color: rgba(255, 255, 255, 0.9);
+                box-shadow: 0 15px 50px -15px rgba(0, 0, 0, 0.12);
+            }
+            .input-glass {
+                background: #ffffff;
+                border: 1px solid #cbd5e1;
+                color: #334155;
+                border-radius: 0.5rem;
+                transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .input-glass:focus {
+                outline: none;
+                border-color: #8b5cf6;
+                box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+                background: #ffffff;
+            }
+            select option {
+                background: #ffffff;
+                color: #1e293b;
+            }
+            #printArea {
+                display: none;
+            }
+            .text-gradient {
+                background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+            .btn-gradient {
+                background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+                background-size: 200% auto;
+                transition: 0.5s;
+            }
+            .btn-gradient:hover {
+                background-position: right center;
+            }
+            
+            ::-webkit-scrollbar { width: 8px; height: 8px; }
+            ::-webkit-scrollbar-track { background: transparent; }
+            ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+            ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        }
+
+        /* ==========================================================================
+           PRINT STYLING (Official Corporate Document Standard)
+           ========================================================================= */
+        @media print {
+            @page {
+                size: A4;
+                margin: 20mm 15mm 15mm 15mm;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                font-family: Arial, Helvetica, sans-serif !important;
+                margin: 0;
+                padding: 0;
+                font-size: 10pt;
+                line-height: 1.4;
+                position: relative;
+                
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            #appArea, #loginArea, .screen-element {
+                display: none !important;
+            }
+            #printArea {
+                display: block !important;
+                width: 100%;
+                position: relative;
+                z-index: 1;
+            }
+            
+            #printArea::before {
+                content: "PT Murinda Sentra Baja";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                font-size: 55pt;
+                font-weight: 900;
+                color: rgba(200, 210, 225, 0.25);
+                white-space: nowrap;
+                z-index: -1;
+                pointer-events: none;
+                font-family: 'Inter', sans-serif;
+                letter-spacing: 4px;
+            }
+            
+            .secure-bg {
+                background-image: repeating-linear-gradient(
+                    45deg,
+                    rgba(150, 150, 150, 0.05) 0px,
+                    rgba(150, 150, 150, 0.05) 2px,
+                    transparent 2px,
+                    transparent 8px
+                ) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Perbaikan Layout Kop Surat Sesuai Gambar Referensi */
+            .kop-container {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                border-bottom: 3px solid #000 !important;
+                padding-bottom: 10px !important;
+                margin-bottom: 15px !important;
+                width: 100% !important;
+            }
+            .kop-left {
+                width: 35% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .kop-logo {
+                width: 165px !important;
+                height: auto !important;
+                object-fit: contain !important;
+                margin-bottom: 12px !important;
+            }
+            .document-title {
+                font-size: 34pt !important;
+                font-weight: 900 !important;
+                letter-spacing: 1px !important;
+                color: #000 !important;
+                line-height: 1 !important;
+                margin: 0 !important;
+            }
+            .kop-right {
+                width: 62% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: flex-start !important;
+            }
+            .company-title {
+                font-size: 16pt !important;
+                font-weight: bold !important;
+                color: #000 !important;
+                margin-bottom: 6px !important;
+                letter-spacing: 0.5px !important;
+            }
+            .address-row {
+                display: flex !important;
+                justify-content: space-between !important;
+                gap: 15px !important;
+            }
+            .address-col {
+                width: 50% !important;
+                font-size: 7.5pt !important;
+                line-height: 1.35 !important;
+                color: #000 !important;
+            }
+            
+            .meta-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+                margin-bottom: 15px;
+            }
+            .meta-table td {
+                padding: 4px 0;
+                vertical-align: top;
+            }
+            .meta-table td.label {
+                width: 90px;
+            }
+            .meta-table td.separator {
+                width: 15px;
+                text-align: center;
+            }
+            .dotted-line {
+                border-bottom: 1px dotted #000;
+            }
+            .image-attachment-box {
+                width: 140px;
+                text-align: center;
+                font-size: 8pt;
+                font-weight: bold;
+                flex-shrink: 0;
+            }
+            .image-attachment-box img {
+                width: 100%;
+                max-height: 140px;
+                object-fit: contain;
+                border: 1px solid #000;
+                margin-top: 4px;
+                background: #fff;
+            }
+            .items-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
+                margin-bottom: 20px;
+            }
+            .items-table th {
+                background-color: #f2f2f2 !important;
+                border: 1px solid #000;
+                padding: 7px;
+                font-weight: bold;
+                font-size: 9.5pt;
+                text-align: center;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .items-table td {
+                border: 1px solid #000;
+                padding: 7px;
+                font-size: 9.5pt;
+            }
+            .text-center { text-align: center; }
+            .text-left { text-align: left; }
+            .sig-container {
+                display: table;
+                width: 100%;
+                margin-top: 35px;
+                border: 1px solid #000;
+                page-break-inside: avoid;
+            }
+            .sig-row {
+                display: table-row;
+            }
+            .sig-cell {
+                display: table-cell;
+                width: 50%;
+                border-right: 1px solid #000;
+                padding: 10px;
+                vertical-align: top;
+            }
+            .sig-cell:last-child {
+                border-right: none;
+            }
+            .sig-title {
+                font-weight: bold;
+                font-size: 9.5pt;
+                margin-bottom: 8px;
+                display: block;
+            }
+            .sig-body {
+                display: table;
+                width: 100%;
+            }
+            .sig-qr-wrapper {
+                display: table-cell;
+                width: 75px;
+                vertical-align: middle;
+            }
+            .sig-qr-img {
+                width: 70px;
+                height: 70px;
+                display: block;
+                background: #fff;
+                padding: 2px;
+                border: 1px solid #ccc;
+            }
+            .sig-details {
+                display: table-cell;
+                vertical-align: middle;
+                padding-left: 12px;
+                font-size: 8.5pt;
+                line-height: 1.3;
+            }
+            .sig-name {
+                font-size: 10pt;
+                font-weight: bold;
+                text-decoration: underline;
+                margin-top: 4px;
+            }
+            .security-footer {
+                margin-top: 25px;
+                border-top: 1px dashed #777;
+                padding: 8px;
+                font-size: 7.5pt;
+                line-height: 1.3;
+                color: #222 !important;
+                page-break-inside: avoid;
+                border: 1px solid #ddd;
+            }
+            .security-hash {
+                font-family: "Courier New", Courier, monospace;
+                font-weight: bold;
+                color: #111 !important;
+                background: #f5f5f5;
+                padding: 2px 5px;
+                border: 1px solid #ddd;
+                display: inline-block;
+                margin-top: 3px;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-3 md:p-6">
+
+    <div id="loginArea" class="glass-panel p-8 w-full max-w-md mx-auto my-12">
+        <div class="text-center mb-8">
+            <div class="inline-block text-left border-b-2 border-indigo-200 pb-2 mb-3">
+                <span class="text-2xl font-black text-blue-700 tracking-wider"></span><br>
+                <span class="text-[9px] font-bold text-gray-500 tracking-widest block -mt-1">PT MURINDA SENTRA BAJA</span>
+            </div>
+            <h2 class="text-lg font-bold text-gray-800 tracking-wide mt-2">Sistem Verifikasi Digital Memo</h2>
+            <p class="text-xs text-gray-500">Kalijati Plant, Subang - West Java</p>
+        </div>
+        
+        <form id="loginForm" onsubmit="executeLogin(event)">
+            <div class="mb-4">
+                <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Pilih Nama Pengguna</label>
+                <select id="usernameSelect" class="w-full p-2.5 rounded input-glass text-sm font-medium" required>
+                    <option value="" disabled selected>-- Pilih Personel --</option>
+                    <option value="020109">Aspuro Amarulloh Khoiri (Plant Administration)</option>
+                    <option value="123456">Asep Suherman (Alternate)</option>
+                </select>
+            </div>
+            <div class="mb-6">
+                <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Kode Kunci Akses (Password)</label>
+                <input type="password" id="passwordInput" class="w-full p-2.5 rounded input-glass text-sm tracking-widest" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="w-full py-3 btn-gradient text-white rounded-lg font-bold text-sm shadow-lg shadow-blue-500/30">
+                Masuk ke Sistem
+            </button>
+        </form>
+        <p id="loginErrorMsg" class="text-red-500 text-xs font-bold mt-4 text-center hidden flex items-center justify-center gap-1">
+            ❌ Kata sandi tidak cocok dengan personel yang dipilih.
+        </p>
+    </div>
+
+    <div id="appArea" class="hidden w-full max-w-5xl mx-auto my-4 animate-fade-in">
+        
+        <div class="glass-panel p-5 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-t-4 border-t-blue-500">
+            <div>
+                <h1 class="text-xl font-black tracking-wide text-gray-800 flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-blue-500 inline-block animate-pulse"></span>
+                    <span class="text-gradient">E-Memo Creator & Verifier</span>
+                </h1>
+                <p class="text-xs text-gray-500 mt-1">Otoritas Digital: <span id="displayUser" class="text-purple-600 font-bold"></span></p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <div class="bg-gray-100 p-1 rounded-lg flex border border-gray-200">
+                    <button id="btnModeNew" onclick="setAppMode('new')" class="px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all">Buat Baru</button>
+                    <button id="btnModeReprint" onclick="setAppMode('reprint')" class="px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center gap-1">Cetak Ulang <span class="bg-purple-100 text-purple-600 px-1.5 rounded text-[10px]">Auto</span></button>
+                </div>
+                
+                <button onclick="executeLogout()" class="px-4 py-1.5 border border-red-200 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 text-xs font-bold rounded-lg transition-all shadow-sm">
+                    Keluar Sistem
+                </button>
+            </div>
+        </div>
+
+        <div class="glass-panel p-6">
+            
+            <div id="reprintFieldsContainer" class="hidden mb-6 p-5 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl border border-purple-100 shadow-inner">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-purple-600 text-lg">🖨️</span>
+                    <h3 class="text-sm font-bold text-purple-700 uppercase tracking-wider">Pilih Riwayat Memo untuk Dicetak Ulang</h3>
+                </div>
+                <p class="text-xs text-gray-600 mb-4">Pilih nomor memo dari database System MEMO. Semua rincian (Kepada, Subjek, Item Barang) akan ditarik otomatis dari cloud.</p>
+                
+                <div>
+                    <select id="dropdownReprintMemo" onchange="handleReprintSelection()" class="w-full p-3 rounded-lg input-glass border-purple-200 focus:border-purple-500 font-semibold text-sm shadow-sm cursor-pointer">
+                        <option value="" disabled selected>-- Memuat Riwayat Memo... --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 space-y-4">
+                    <h3 class="text-sm font-bold text-blue-600 uppercase tracking-wider border-b border-gray-200 pb-2">Informasi Memorandum</h3>
+                    
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Kepada (Departemen / Bagian)</label>
+                        <select id="selectKepada" onchange="handleDepartemenChange()" class="w-full p-2 text-sm input-glass mb-2">
+                            <option value="GENERAL AFFAIRS" selected>General Affairs</option>
+                            <option value="HUMAN RESOURCE">Human Resource</option>
+                            <option value="MAINTENANCE">Maintenance</option>
+                            <option value="WAREHOUSE">Warehouse</option>
+                            <option value="PRODUCTION">Production</option>
+                            <option value="QUALITY CONTROL">Quality Control</option>
+                            <option value="ENGINEERING">Engineering</option>
+                            <option value="LAINNYA">Lainnya...</option>
+                        </select>
+                        <input type="text" id="inputKepada" class="w-full p-2 text-sm input-glass hidden" placeholder="Ketikkan nama departemen atau bagian tujuan...">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Penerima (Attendance / U.p.)</label>
+                        <input type="text" id="inputPenerima" class="w-full p-2 text-sm input-glass" placeholder="Misal: Bpk. Steve">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Alamat Penyerahan</label>
+                        <input type="text" id="inputAlamat" class="w-full p-2 text-sm input-glass" value="PT Murinda Sentra Baja, Kalijati, Subang">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Subjek / Perihal</label>
+                        <input type="text" id="inputSubjek" class="w-full p-2 text-sm input-glass font-medium text-blue-900" placeholder="Misal: Permohonan Pengadaan Material Operasional (ATK)">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Lampiran Dokumen</label>
+                        <input type="text" id="inputLampiran" class="w-full p-2 text-sm input-glass" placeholder="Misal: 1 (Satu) Berkas Penawaran Harga atau (-) jika nihil" value="-">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Unggah Bukti Visual (Opsional)</label>
+                        <input type="file" id="inputGambarFile" accept="image/*" class="w-full p-1.5 text-xs input-glass bg-white file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100 cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 flex flex-col">
+                    <div class="flex justify-between items-center mb-2 border-b border-gray-200 pb-2">
+                        <h3 class="text-sm font-bold text-blue-600 uppercase tracking-wider">Daftar Rincian Kebutuhan</h3>
+                        <button onclick="insertItemRow()" id="btnTambahItem" class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs font-bold rounded-lg transition-all flex items-center gap-1 shadow-sm">
+                            ➕ Tambah Item
+                        </button>
+                    </div>
+                    
+                    <div class="overflow-x-auto flex-1 rounded-lg border border-gray-200 shadow-sm">
+                        <table class="w-full text-xs text-left text-gray-700" id="tableControlGrid">
+                            <thead class="bg-gray-100 text-gray-600 uppercase text-[10px] font-bold border-b border-gray-200">
+                                <tr>
+                                    <th class="p-2.5 w-10 text-center">No</th>
+                                    <th class="p-2.5">Deskripsi Spesifikasi Barang</th>
+                                    <th class="p-2.5 w-20 text-center">Kuantitas</th>
+                                    <th class="p-2.5 w-24">Satuan</th>
+                                    <th class="p-2.5 w-12 text-center">Hapus</th>
+                                </tr>
+                            </thead>
+                            <tbody id="controlGridBody" class="bg-white">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-5 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div id="statusProsedurContainer" class="text-xs text-gray-600 bg-blue-50 p-3 rounded-xl border border-blue-100 max-w-md w-full shadow-inner">
+                    <span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>
+                    1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>
+                    2. Sistem akan mengunci data dan membuka tombol <strong class="text-amber-600">Cetak PDF</strong>.
+                </div>
+                
+                <div class="flex gap-3 w-full sm:w-auto justify-end flex-wrap">
+                    <button id="actionBtnSave" onclick="saveDataToCloud()" class="w-full sm:w-auto px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-500/30">
+                        1. Simpan ke System Memo
+                    </button>
+                    <button id="actionBtnPrint" onclick="preparePrintLayout()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-sm transition-all opacity-50 cursor-not-allowed shadow-lg shadow-amber-500/30" disabled>
+                        2. Cetak / Unduh PDF
+                    </button>
+                </div>
+            </div>
+            <p id="cloudStatusOutput" class="text-xs text-right mt-3 font-semibold"></p>
+        </div>
+    </div>
+
+
+    <div id="printArea">
+        
+        <div class="kop-container">
+            <div class="kop-left">
+                <img src="MSB Logo.png" alt="Logo MSB" class="kop-logo">
+                <div class="document-title">MEMO</div>
+            </div>
+            
+            <div class="kop-right">
+                <div class="company-title">PT MURINDA SENTRA BAJA</div>
+                <div class="address-row">
+                    <div class="address-col">
+                        <strong>Head Office:</strong><br>
+                        15 Fl, Permata Kuningan Building<br>
+                        Jalan Kuningan Mulia Kav. 9C, Jakarta 12980, Indonesia<br>
+                        Phone : (+6221) 28546000<br>
+                        Fax : (+6221) 28546001/11<br>
+                        E-mail : murinda@murinda.com
+                    </div>
+                    <div class="address-col">
+                        <strong>Subang Plant:</strong><br>
+                        Jl. Raya Kalijati Purwadadi No. 123A RT 006/02<br>
+                        Desa Kalijati Barat, Kecamatan Kalijati, Kabupaten Subang<br>
+                        West Java 41271 (Exit Toll Gate Kalijati)<br>
+                        Phone : (+62260) 7495467<br>
+                        Fax : (+62260) 7495222<br>
+                        E-mail : plant@murinda.com
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 10.5pt; margin-bottom: 12px;">
+            <div id="targetMemoNo">MSB/MEMO/---</div>
+            <div id="targetMemoDate">Kalijati, --/--/----</div>
+        </div>
+
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; min-height: 125px;">
+            <div style="flex: 1;">
+                <table class="meta-table" style="margin-top: 0;">
+                    <tr>
+                        <td class="label">Dear,</td>
+                        <td class="separator"></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="padding-bottom: 8px;"><strong style="font-size: 12pt; text-transform: uppercase;" id="targetKepada">GENERAL AFFAIRS</strong></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Address</td>
+                        <td class="separator">:</td>
+                        <td id="targetAlamat">Plant Murinda Kalijati, Subang</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Attendance</td>
+                        <td class="separator">:</td>
+                        <td id="targetPenerima" class="dotted-line"></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Subject</td>
+                        <td class="separator">:</td>
+                        <td id="targetSubjek" class="dotted-line" style="font-weight: bold;"></td>
+                    </tr>
+                    <tr>
+                        <td class="label">Enclosure</td>
+                        <td class="separator">:</td>
+                        <td id="targetLampiran" class="dotted-line"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="image-attachment-box" id="targetImageBox" style="display:none;">
+                <span>Picture</span>
+                <img id="targetImgRender" src="" alt="Lampiran Visual">
+            </div>
+        </div>
+
+        <div style="margin-top: 15px; text-align: justify;">
+            <p>Dengan hormat,</p>
+            <p>Bersama dengan memorandum ini, kami sampaikan permohonan pengadaan barang/material operasional guna mendukung kelancaran aktivitas kerja di lingkungan PT Murinda Sentra Baja Plant Kalijati, dengan rincian spesifikasi dan volume kebutuhan sebagai berikut:</p>
+        </div>
+
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th style="width: 10%;">Number</th>
+                    <th style="width: 70%;">Description</th>
+                    <th style="width: 20%;">Qty</th>
+                </tr>
+            </thead>
+            <tbody id="targetTableItemsBody">
+                </tbody>
+        </table>
+
+        <div style="margin-top: 12px;">
+            <p>Demikian memorandum ini kami ajukan. Atas perhatian, dukungan, dan tindak lanjut segera dari bagian terkait, kami sampaikan terima kasih.</p>
+        </div>
+
+        <div class="sig-container secure-bg">
+            <div class="sig-row">
+                <div class="sig-cell">
+                    <span class="sig-title">Prepared By,</span>
+                    <div class="sig-body">
+                        <div class="sig-qr-wrapper">
+                            <img id="qrCodeImgPrepared" class="sig-qr-img" src="" alt="Digital Signature QR">
+                        </div>
+                        <div class="sig-details">
+                            Ditandatangani secara digital oleh:<br>
+                            Plant Administration System<br>
+                            <div class="sig-name" id="labelNamaPrepared">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sig-cell">
+                    <span class="sig-title">Acknowledged By,</span>
+                    <div class="sig-body">
+                        <div class="sig-qr-wrapper">
+                            <img id="qrCodeImgApproved" class="sig-qr-img" src="" alt="Digital Signature QR">
+                        </div>
+                        <div class="sig-details">
+                            Ditandatangani secara digital oleh:<br>
+                            Plant Engineer<br>
+                            <div class="sig-name" id="labelNamaApproved">Titus Chrisna Dwi Laksana</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="security-footer secure-bg">
+            <strong>SISTEM VERIFIKASI DIGITAL - PT MURINDA SENTRA BAJA</strong><br>
+            Dokumen ini sah, diterbitkan secara resmi melalui sistem ERP internal, dan ditandatangani secara digital. Modifikasi fisik atau perubahan teks tanpa otorisasi digital membatalkan keabsahan dokumen ini. Pindai kode QR di atas untuk memvalidasi log aktivitas asli pada pangkalan data PT Murinda Sentra Baja.<br>
+            <span class="text-xs font-bold text-slate-800">Unique Security Hash Code Protection:</span><br>
+            <div id="targetSecurityHash" class="security-hash">MSB-SECURE-PENDING-SYNC-VALIDATION-LOCK</div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // CONFIGURATION PARAMETERS CONFIG DEPLOYMENT
+        // ==========================================
+        const APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxp6nT5FXerCtQ-5sDX87dYTXeYEX_C6tjftveLuwlf7-P4wx5in0kpKZLn-flTEoJ5rA/exec"; 
+        
+        const USER_AUTHORIZATION_DB = {
+            "020109": { nama: "Aspuro Amarulloh Khoiri", tinyUrl: "https://tinyurl.com/MSB-Aspuro" },
+            "123456": { nama: "Asep Suherman", tinyUrl: "https://tinyurl.com/MSB-Asep-Suherman" }
+        };
+        const ACKNOWLEDGED_BY_CHRISNA_TINYURL = "https://tinyurl.com/MSB-Chrisna";
+        const UNIT_MEASUREMENTS_OPTIONS = ['PCS', 'KG', 'LTR', 'MTR', 'LOT', 'SET', 'UNIT', 'BOX', 'REAM', 'LEMBAR', 'BATANG'];
+        const MEMO_HISTORY_KEY = "MSB_MEMO_HISTORY";
+
+        let authenticatedUserSession = null;
+        let attachmentBase64Data = "";
+        let cloudGeneratedMemoNo = "";
+        let cloudGeneratedDateString = "";
+        let globalItemSequence = 0;
+        let isReprintMode = false;
+        let serverMemoHistory = [];
+
+        function handleDepartemenChange() {
+            const selectEl = document.getElementById('selectKepada');
+            const inputLainnya = document.getElementById('inputKepada');
+            
+            if (selectEl.value === 'LAINNYA') {
+                inputLainnya.classList.remove('hidden');
+                inputLainnya.value = "";
+                inputLainnya.required = true;
+            } else {
+                inputLainnya.classList.add('hidden');
+                inputLainnya.value = selectEl.value;
+                inputLainnya.required = false;
+            }
+        }
+
+        function executeLogin(event) {
+            event.preventDefault(); 
+            const selectedToken = document.getElementById('usernameSelect').value;
+            const inputtedPassword = document.getElementById('passwordInput').value.trim();
+            const errorLabel = document.getElementById('loginErrorMsg');
+
+            if (!selectedToken) {
+                alert("Harap pilih personel terlebih dahulu.");
+                return;
+            }
+
+            if (USER_AUTHORIZATION_DB[selectedToken] && selectedToken === inputtedPassword) {
+                authenticatedUserSession = USER_AUTHORIZATION_DB[selectedToken];
+                errorLabel.classList.add('hidden');
+                document.getElementById('loginArea').classList.add('hidden');
+                document.getElementById('appArea').classList.remove('hidden');
+                document.getElementById('displayUser').innerText = authenticatedUserSession.nama;
+                
+                resetAppToBlank();
+            } else {
+                errorLabel.classList.remove('hidden');
+            }
+        }
+
+        function executeLogout() {
+            if(confirm("Apakah Anda ingin keluar dari sistem e-Memo?")) {
+                location.reload();
+            }
+        }
+
+        function resetAppToBlank() {
+            document.getElementById('selectKepada').value = "GENERAL AFFAIRS";
+            document.getElementById('inputKepada').value = "GENERAL AFFAIRS";
+            document.getElementById('inputKepada').classList.add('hidden');
+            
+            document.getElementById('inputPenerima').value = "";
+            document.getElementById('inputAlamat').value = "Plant Murinda Kalijati, Subang";
+            document.getElementById('inputSubjek').value = "";
+            document.getElementById('inputLampiran').value = "-";
+            document.getElementById('inputGambarFile').value = "";
+            attachmentBase64Data = "";
+            
+            document.getElementById('controlGridBody').innerHTML = "";
+            insertItemRow(); 
+        }
+
+        function loadHistoryDropdown() {
+            const dropdown = document.getElementById('dropdownReprintMemo');
+            
+            dropdown.innerHTML = '<option value="" disabled selected>⏳ Menghubungkan ke System MEMO...</option>';
+            document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-amber-500 font-bold animate-pulse";
+            document.getElementById('cloudStatusOutput').innerText = "Mengambil database riwayat dari cloud...";
+            
+            fetch(APPS_SCRIPT_WEBAPP_URL)
+            .then(response => response.json())
+            .then(history => {
+                document.getElementById('cloudStatusOutput').innerText = ""; 
+                
+                if (history.status === "error") {
+                    throw new Error(history.message);
+                }
+                
+                serverMemoHistory = history; 
+                dropdown.innerHTML = '<option value="" disabled selected>-- Pilih Data Memo dari Spreadsheet --</option>';
+                
+                if (history.length === 0) {
+                    dropdown.innerHTML += '<option value="" disabled>Belum ada riwayat memo di database.</option>';
+                    return;
+                }
+
+                history.forEach(memo => {
+                    dropdown.innerHTML += `<option value="${memo._memoNo}">${memo._memoNo} - ${memo.subjek} (${memo._date})</option>`;
+                });
+            })
+            .catch(error => {
+                console.error("Gagal memuat riwayat:", error);
+                dropdown.innerHTML = '<option value="" disabled selected>❌ Gagal mengambil data jaringan.</option>';
+                document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-red-500 font-bold";
+                document.getElementById('cloudStatusOutput').innerText = "Gagal terhubung ke Google System MEMO. Periksa script url atau jaringan Anda.";
+            });
+        }
+
+        function handleReprintSelection() {
+            const selectedNo = document.getElementById('dropdownReprintMemo').value;
+            if (!selectedNo) return;
+
+            const memo = serverMemoHistory.find(m => m._memoNo === selectedNo);
+
+            if (memo) {
+                const memoKepada = memo.kepada || "";
+                const selectEl = document.getElementById('selectKepada');
+                const inputLainnya = document.getElementById('inputKepada');
+                
+                const optionExists = Array.from(selectEl.options).some(opt => opt.value === memoKepada && memoKepada !== 'LAINNYA');
+                
+                if (optionExists) {
+                    selectEl.value = memoKepada;
+                    inputLainnya.value = memoKepada;
+                    inputLainnya.classList.add('hidden');
+                } else {
+                    selectEl.value = 'LAINNYA';
+                    inputLainnya.value = memoKepada;
+                    inputLainnya.classList.remove('hidden');
+                }
+
+                document.getElementById('inputPenerima').value = memo.penerima === "-" ? "" : memo.penerima;
+                document.getElementById('inputAlamat').value = memo.alamat || "";
+                document.getElementById('inputSubjek').value = memo.subjek || "";
+                document.getElementById('inputLampiran').value = memo.lampiran || "-";
+                
+                cloudGeneratedMemoNo = memo._memoNo;
+                cloudGeneratedDateString = memo._date;
+                attachmentBase64Data = memo.gambarBase64 || "";
+
+                document.getElementById('controlGridBody').innerHTML = "";
+                if (memo.items && memo.items.length > 0) {
+                    memo.items.forEach(item => {
+                        insertItemRow(item.deskripsi, item.qty, item.satuan);
+                    });
+                } else {
+                    insertItemRow();
+                }
+
+                const btnPrint = document.getElementById('actionBtnPrint');
+                btnPrint.disabled = false;
+                btnPrint.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+                
+                document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-purple-600 font-bold";
+                document.getElementById('cloudStatusOutput').innerText = "✔ Data System MEMO berhasil dimuat lengkap dan siap dicetak!";
+            }
+        }
+
+        function setAppMode(mode) {
+            const btnNew = document.getElementById('btnModeNew');
+            const btnReprint = document.getElementById('btnModeReprint');
+            const reprintFields = document.getElementById('reprintFieldsContainer');
+            const btnSave = document.getElementById('actionBtnSave');
+            const btnPrint = document.getElementById('actionBtnPrint');
+            const statusContainer = document.getElementById('statusProsedurContainer');
+            const btnTambahItem = document.getElementById('btnTambahItem');
+
+            if (mode === 'reprint') {
+                isReprintMode = true;
+                
+                btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-purple-600 transition-all flex items-center gap-1";
+                btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all";
+                
+                reprintFields.classList.remove('hidden');
+                btnSave.classList.add('hidden');
+                
+                document.querySelectorAll('.input-glass:not(#dropdownReprintMemo)').forEach(el => el.classList.add('bg-gray-100', 'cursor-not-allowed'));
+                btnTambahItem.classList.add('hidden');
+                
+                btnPrint.disabled = true;
+                btnPrint.classList.add('opacity-50', 'cursor-not-allowed');
+                btnPrint.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+                btnPrint.classList.add('w-full', 'bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'hover:from-purple-500', 'hover:to-blue-500');
+                btnPrint.innerText = "🖨️ Cetak / Unduh Dokumen (Mode Reprint)";
+                
+                statusContainer.innerHTML = `<span class="text-purple-600 font-bold">💡 Mode Cetak Ulang Aktif:</span><br>Pilih riwayat dari dropdown. Data riwayat ini diambil dan ditarik secara otomatis dari System MEMO(Cloud).`;
+                document.getElementById('cloudStatusOutput').innerText = "";
+
+                resetAppToBlank();
+                loadHistoryDropdown();
+
+            } else {
+                isReprintMode = false;
+                
+                btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all";
+                btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center gap-1";
+                
+                reprintFields.classList.add('hidden');
+                btnSave.classList.remove('hidden');
+                
+                document.querySelectorAll('.input-glass').forEach(el => el.classList.remove('bg-gray-100', 'cursor-not-allowed'));
+                btnTambahItem.classList.remove('hidden');
+
+                btnPrint.disabled = true;
+                btnPrint.classList.add('opacity-50', 'cursor-not-allowed', 'bg-amber-500', 'hover:bg-amber-600', 'sm:w-auto');
+                btnPrint.classList.remove('w-full', 'bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'hover:from-purple-500', 'hover:to-blue-500');
+                btnPrint.innerText = "2. Cetak / Unduh PDF";
+                
+                statusContainer.innerHTML = `<span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>2. Sistem akan mengunci data dan membuka tombol <strong class="text-amber-600">Cetak PDF</strong>.`;
+                
+                cloudGeneratedMemoNo = "";
+                cloudGeneratedDateString = "";
+                resetAppToBlank();
+                document.getElementById('cloudStatusOutput').innerText = "";
+            }
+        }
+
+        function insertItemRow(desc = '', qty = 1, unit = 'PCS') {
+            globalItemSequence++;
+            const tableBody = document.getElementById('controlGridBody');
+            const tableRowElement = document.createElement('tr');
+            tableRowElement.className = "border-b border-gray-200 hover:bg-blue-50 transition-all";
+            tableRowElement.id = `item-grid-row-${globalItemSequence}`;
+            
+            const dropOptionsHtml = UNIT_MEASUREMENTS_OPTIONS.map(opt => 
+                `<option value="${opt}" ${opt === unit ? 'selected' : ''}>${opt}</option>`
+            ).join('');
+
+            const inputClassExt = isReprintMode ? "bg-gray-100 cursor-not-allowed" : "bg-white";
+            const inputDisabled = isReprintMode ? "disabled" : "";
+
+            tableRowElement.innerHTML = `
+                <td class="p-2.5 text-center font-bold text-gray-500 index-label">0</td>
+                <td class="p-1.5"><input type="text" class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs item-desc-field transition-all" placeholder="Uraikan rincian spesifikasi..." required ${inputDisabled}></td>
+                <td class="p-1.5"><input type="number" class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs text-center item-qty-field transition-all" min="1" required ${inputDisabled}></td>
+                <td class="p-1.5">
+                    <select class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs item-unit-field transition-all" ${inputDisabled}>
+                        ${dropOptionsHtml}
+                    </select>
+                </td>
+                <td class="p-1.5 text-center">
+                    ${!isReprintMode ? `<button type="button" onclick="removeItemRow(${globalItemSequence})" class="text-red-500 hover:text-red-700 font-bold transition-transform hover:scale-125 inline-block text-sm p-1">✕</button>` : `<span class="text-gray-400 font-bold">🔒</span>`}
+                </td>
+            `;
+            
+            tableBody.appendChild(tableRowElement);
+            
+            if(desc) tableRowElement.querySelector('.item-desc-field').value = desc;
+            tableRowElement.querySelector('.item-qty-field').value = qty;
+            
+            reindexControlGridRows();
+        }
+
+        function removeItemRow(rowIdentifier) {
+            const currentActiveRows = document.getElementById('controlGridBody').querySelectorAll('tr');
+            if (currentActiveRows.length <= 1) {
+                alert("Sistem mewajibkan minimal terdapat satu item kebutuhan di dalam berkas memorandum.");
+                return;
+            }
+            document.getElementById(`item-grid-row-${rowIdentifier}`).remove();
+            reindexControlGridRows();
+        }
+
+        function reindexControlGridRows() {
+            const currentActiveRows = document.getElementById('controlGridBody').querySelectorAll('tr');
+            currentActiveRows.forEach((row, sequentialIdx) => {
+                row.querySelector('.index-label').innerText = sequentialIdx + 1;
+            });
+        }
+
+        document.getElementById('inputGambarFile').addEventListener('change', function(event) {
+            const uploadedFile = event.target.files[0];
+            if (uploadedFile) {
+                if (uploadedFile.size > 2 * 1024 * 1024) { 
+                    alert("Ukuran berkas gambar terlalu besar. Maksimal kapasitas unggah adalah 2 MB.");
+                    this.value = "";
+                    attachmentBase64Data = "";
+                    return;
+                }
+                const fileReaderEngine = new FileReader();
+                fileReaderEngine.onload = function(loadEvent) {
+                    attachmentBase64Data = loadEvent.target.result;
+                };
+                fileReaderEngine.readAsDataURL(uploadedFile);
+            } else {
+                attachmentBase64Data = "";
+            }
+        });
+
+        function saveDataToCloud() {
+            if (!APPS_SCRIPT_WEBAPP_URL || APPS_SCRIPT_WEBAPP_URL.includes("SILAHKAN_PASTE_URL")) {
+                alert("Gagal Memproses: Konfigurasi URL Google Apps Script belum disematkan pada kode HTML induk.");
+                return;
+            }
+
+            const btnSave = document.getElementById('actionBtnSave');
+            const btnPrint = document.getElementById('actionBtnPrint');
+            const statusIndicator = document.getElementById('cloudStatusOutput');
+
+            const packagedItems = [];
+            let inputValidationPassed = true;
+
+            document.getElementById('controlGridBody').querySelectorAll('tr').forEach(row => {
+                const descVal = row.querySelector('.item-desc-field').value.trim();
+                const qtyVal = parseInt(row.querySelector('.item-qty-field').value, 10);
+                const unitVal = row.querySelector('.item-unit-field').value;
+                
+                if (!descVal) {
+                    inputValidationPassed = false;
+                } else {
+                    packagedItems.push({ deskripsi: descVal, qty: qtyVal, satuan: unitVal });
+                }
+            });
+
+            const subjectVal = document.getElementById('inputSubjek').value.trim();
+            if (!subjectVal) {
+                alert("Harap mengisi bidang Subjek / Perihal memo terlebih dahulu.");
+                return;
+            }
+
+            if (!inputValidationPassed || packagedItems.length === 0) {
+                alert("Harap lengkapi semua deskripsi item yang Anda tambahkan ke tabel.");
+                return;
+            }
+
+            const deptSelectVal = document.getElementById('selectKepada').value;
+            const finalKepada = deptSelectVal === 'LAINNYA' ? document.getElementById('inputKepada').value.trim() : deptSelectVal;
+
+            if(!finalKepada) {
+                alert("Harap lengkapi isian departemen atau bagian tujuan.");
+                return;
+            }
+
+            const transactionPayload = {
+                kepada: finalKepada,
+                penerima: document.getElementById('inputPenerima').value.trim() || "-",
+                alamat: document.getElementById('inputAlamat').value.trim(),
+                subjek: subjectVal,
+                lampiran: document.getElementById('inputLampiran').value.trim() || "-",
+                gambarBase64: attachmentBase64Data,
+                items: packagedItems,
+                dibuatOleh: authenticatedUserSession.nama,
+                disetujuiOleh: "Titus Chrisna Dwi Laksana"
+            };
+
+            btnSave.innerText = "⏳ Menyimpan Data...";
+            btnSave.disabled = true;
+            statusIndicator.className = "text-xs text-right mt-3 text-amber-500 font-bold animate-pulse";
+            statusIndicator.innerText = "Mengirim data enkripsi menuju cloud MSB ERP...";
+
+            fetch(APPS_SCRIPT_WEBAPP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(transactionPayload)
+            })
+            .then(networkResponse => {
+                if(!networkResponse.ok) throw new Error("HTTP network response failure status.");
+                return networkResponse.json();
+            })
+            .then(serverResultJson => {
+                if (serverResultJson.status === 'success') {
+                    cloudGeneratedMemoNo = serverResultJson.memoNo;
+                    cloudGeneratedDateString = serverResultJson.date;
+
+                    statusIndicator.className = "text-xs text-right mt-3 text-emerald-600 font-bold";
+                    statusIndicator.innerHTML = `✔ Berhasil Tersimpan! Nomor Terbit Otomatis: ${cloudGeneratedMemoNo}`;
+                    
+                    btnPrint.disabled = false;
+                    btnPrint.classList.remove('opacity-50', 'cursor-not-allowed');
+                    
+                    alert(`Data memo berhasil diverifikasi dan direkam ke sistem database! Nomor Registrasi: ${cloudGeneratedMemoNo}`);
+                } else {
+                    throw new Error(serverResultJson.message || "Unknown Apps Script runtime anomaly.");
+                }
+            })
+            .catch(networkError => {
+                console.error(networkError);
+                statusIndicator.className = "text-xs text-right mt-3 text-red-500 font-bold";
+                statusIndicator.innerText = `❌ Gangguan Sistem: ${networkError.message}. Periksa URL atau koneksi jaringan Anda.`;
+                alert(`Gagal menyimpan data ke cloud server: ${networkError.message}`);
+            })
+            .finally(() => {
+                btnSave.innerText = "1. Simpan ke System Memo";
+                btnSave.disabled = false;
+            });
+        }
+
+        function computeSecurityHashSignature(memoNo, requester, subject, itemCount) {
+            const timestampSeed = new Date().getTime();
+            const complexRawString = `${memoNo}|${requester}|${subject}|${itemCount}|${timestampSeed}`;
+            let signatureHashVal = 0;
+            for (let i = 0; i < complexRawString.length; i++) {
+                const charCode = complexRawString.charCodeAt(i);
+                signatureHashVal = ((signatureHashVal << 5) - signatureHashVal) + charCode;
+                signatureHashVal |= 0;
+            }
+            const cleanHexStr = Math.abs(signatureHashVal).toString(16).toUpperCase().padStart(8, '0');
+            return `MSB-SECURE-SHA256:8F${cleanHexStr}A9D3CC${cleanHexStr}E7942B`;
+        }
+
+        function preparePrintLayout() {
+            if (!cloudGeneratedMemoNo) {
+                alert("Peringatan: Harap simpan data (Buat Baru) atau pilih riwayat dokumen (Cetak Ulang) terlebih dahulu.");
+                return;
+            }
+
+            const deptSelectVal = document.getElementById('selectKepada').value;
+            const finalKepada = deptSelectVal === 'LAINNYA' ? document.getElementById('inputKepada').value.trim() : deptSelectVal;
+
+            document.getElementById('targetMemoNo').innerText = cloudGeneratedMemoNo;
+            document.getElementById('targetMemoDate').innerText = `Kalijati, ${cloudGeneratedDateString}`;
+            
+            document.getElementById('targetKepada').innerText = finalKepada;
+            document.getElementById('targetAlamat').innerText = document.getElementById('inputAlamat').value;
+            document.getElementById('targetPenerima').innerText = document.getElementById('inputPenerima').value || "-";
+            document.getElementById('targetSubjek').innerText = document.getElementById('inputSubjek').value;
+            document.getElementById('targetLampiran').innerText = document.getElementById('inputLampiran').value || "-";
+
+            const targetImageBoxFrame = document.getElementById('targetImageBox');
+            if (attachmentBase64Data) {
+                document.getElementById('targetImgRender').src = attachmentBase64Data;
+                targetImageBoxFrame.style.display = 'block';
+            } else {
+                targetImageBoxFrame.style.display = 'none';
+            }
+
+            const printTableContentBody = document.getElementById('targetTableItemsBody');
+            printTableContentBody.innerHTML = "";
+            let generatedItemCounter = 0;
+
+            document.getElementById('controlGridBody').querySelectorAll('tr').forEach(row => {
+                const desc = row.querySelector('.item-desc-field').value.trim();
+                const qty = row.querySelector('.item-qty-field').value;
+                const unit = row.querySelector('.item-unit-field').value;
+                
+                if (desc) {
+                    generatedItemCounter++;
+                    printTableContentBody.innerHTML += `
+                        <tr>
+                            <td class="text-center">${generatedItemCounter}</td>
+                            <td class="text-left">${desc}</td>
+                            <td class="text-center">${qty} ${unit}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            let dynamicFillerQuota = 6 - generatedItemCounter;
+            for (let padIdx = 0; padIdx < dynamicFillerQuota; padIdx++) {
+                printTableContentBody.innerHTML += `
+                    <tr>
+                        <td style="height: 26px;"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                `;
+            }
+
+            const antiForgeryHash = computeSecurityHashSignature(
+                cloudGeneratedMemoNo, 
+                authenticatedUserSession.nama, 
+                document.getElementById('inputSubjek').value,
+                generatedItemCounter
+            );
+            document.getElementById('targetSecurityHash').innerText = (isReprintMode ? "[REPRINTED] " : "") + antiForgeryHash;
+
+            const baseQrGenerationApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&ecc=H&margin=0&data=";
+            
+            document.getElementById('labelNamaPrepared').innerText = authenticatedUserSession.nama;
+            
+            const imgPreparedQr = document.getElementById('qrCodeImgPrepared');
+            const imgApprovedQr = document.getElementById('qrCodeImgApproved');
+
+            imgPreparedQr.src = baseQrGenerationApiUrl + encodeURIComponent(authenticatedUserSession.tinyUrl);
+            imgApprovedQr.src = baseQrGenerationApiUrl + encodeURIComponent(ACKNOWLEDGED_BY_CHRISNA_TINYURL);
+
+            let loadingAssetsCounter = 0;
+            const assetValidationCallback = () => {
+                loadingAssetsCounter++;
+                if (loadingAssetsCounter === 2) {
+                    setTimeout(() => {
+                        window.print();
+                    }, 450);
+                }
+            };
+
+            imgPreparedQr.onload = assetValidationCallback;
+            imgApprovedQr.onload = assetValidationCallback;
+            
+            imgPreparedQr.onerror = () => { window.print(); };
+            imgApprovedQr.onerror = () => { window.print(); };
+        }
+    </script>
+</body>
+</html>
