@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <style>
         /* ==========================================================================
-           SCREEN STYLING (Gemini Pro Colorful Light Theme)
+           SCREEN STYLING (Gemini Pro Colorful Light Theme & Animations)
            ========================================================================= */
         @media screen {
             body {
@@ -76,6 +76,35 @@
             ::-webkit-scrollbar-track { background: transparent; }
             ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
             ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+            /* --- ANIMATION KEYFRAMES --- */
+            @keyframes road-move {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-50%); }
+            }
+            .animate-road-move {
+                animation: road-move 0.4s linear infinite;
+            }
+            @keyframes spin-slow {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            .animate-spin-slow {
+                animation: spin-slow 0.4s linear infinite;
+            }
+            @keyframes truck-drive {
+                0% { transform: translateX(-250px); }
+                25% { transform: translateX(180px); }
+                75% { transform: translateX(180px); }
+                100% { transform: translateX(800px); }
+            }
+            @keyframes truck-bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-4px); }
+            }
+            .animate-truck-bounce {
+                animation: truck-bounce 0.3s infinite;
+            }
         }
 
         /* ==========================================================================
@@ -103,7 +132,7 @@
                 -ms-user-select: none;
                 user-select: none;
             }
-            #appArea, #loginArea, .screen-element {
+            #appArea, #loginArea, .screen-element, #animationOverlay {
                 display: none !important;
             }
             #printArea {
@@ -349,7 +378,7 @@
         <form id="loginForm" onsubmit="executeLogin(event)">
             <div class="mb-4">
                 <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Pilih Nama Pengguna</label>
-                <select id="usernameSelect" class="w-full p-2.5 rounded input-glass text-sm font-medium" required>
+                <select id="usernameSelect" class="w-full p-2.5 rounded input-glass text-sm font-medium hover:border-blue-400 transition-all cursor-pointer" required>
                     <option value="" disabled selected>-- Pilih Personel --</option>
                     <option value="020109">Aspuro Amarulloh Khoiri (Plant Administration)</option>
                     <option value="123456">Asep Suherman (Alternate)</option>
@@ -357,9 +386,9 @@
             </div>
             <div class="mb-6">
                 <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Kode Kunci Akses (Password)</label>
-                <input type="password" id="passwordInput" class="w-full p-2.5 rounded input-glass text-sm tracking-widest" placeholder="••••••••" required>
+                <input type="password" id="passwordInput" class="w-full p-2.5 rounded input-glass text-sm tracking-widest hover:border-blue-400 transition-all" placeholder="••••••••" required>
             </div>
-            <button type="submit" class="w-full py-3 btn-gradient text-white rounded-lg font-bold text-sm shadow-lg shadow-blue-500/30">
+            <button type="submit" class="w-full py-3 btn-gradient text-white rounded-lg font-bold text-sm shadow-lg shadow-blue-500/30 transform transition-all duration-300 hover:scale-[1.02] active:scale-95">
                 Masuk ke Sistem
             </button>
         </form>
@@ -381,11 +410,11 @@
             
             <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                 <div class="bg-gray-100 p-1 rounded-lg flex border border-gray-200">
-                    <button id="btnModeNew" onclick="setAppMode('new')" class="px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all">Buat Baru</button>
-                    <button id="btnModeReprint" onclick="setAppMode('reprint')" class="px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center gap-1">Cetak Ulang <span class="bg-purple-100 text-purple-600 px-1.5 rounded text-[10px]">Auto</span></button>
+                    <button id="btnModeNew" onclick="setAppMode('new')" class="px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all transform hover:scale-105 active:scale-95">Buat Baru</button>
+                    <button id="btnModeReprint" onclick="setAppMode('reprint')" class="px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center gap-1 transform hover:scale-105 active:scale-95">Cetak Ulang <span class="bg-purple-100 text-purple-600 px-1.5 rounded text-[10px]">Auto</span></button>
                 </div>
                 
-                <button onclick="executeLogout()" class="px-4 py-1.5 border border-red-200 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 text-xs font-bold rounded-lg transition-all shadow-sm">
+                <button onclick="executeLogout()" class="px-4 py-1.5 border border-red-200 bg-red-50 hover:bg-red-500 hover:text-white text-red-600 text-xs font-bold rounded-lg transition-all shadow-sm transform hover:scale-105 active:scale-95">
                     Keluar Sistem
                 </button>
             </div>
@@ -401,7 +430,7 @@
                 <p class="text-xs text-gray-600 mb-4">Pilih nomor memo dari database System MEMO. Semua rincian (Kepada, Subjek, Item Barang) akan ditarik otomatis dari cloud.</p>
                 
                 <div>
-                    <select id="dropdownReprintMemo" onchange="handleReprintSelection()" class="w-full p-3 rounded-lg input-glass border-purple-200 focus:border-purple-500 font-semibold text-sm shadow-sm cursor-pointer">
+                    <select id="dropdownReprintMemo" onchange="handleReprintSelection()" class="w-full p-3 rounded-lg input-glass border-purple-200 focus:border-purple-500 font-semibold text-sm shadow-sm cursor-pointer hover:border-purple-400 transition-all">
                         <option value="" disabled selected>-- Memuat Riwayat Memo... --</option>
                     </select>
                 </div>
@@ -413,7 +442,7 @@
                     
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Tipe Cetak Memo</label>
-                        <select id="selectJenisMemo" onchange="handleJenisMemoChange()" class="w-full p-2 text-sm input-glass mb-2 font-medium bg-blue-50 text-blue-700 border-blue-200">
+                        <select id="selectJenisMemo" onchange="handleJenisMemoChange()" class="w-full p-2 text-sm input-glass mb-2 font-medium bg-blue-50 text-blue-700 border-blue-200 cursor-pointer">
                             <option value="pengadaan" selected>Memo Pengadaan (Tabel Digital)</option>
                             <option value="tulis">Memo Tulis (Teks Paragraf)</option>
                         </select>
@@ -421,7 +450,7 @@
 
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Kepada (Departemen / Bagian)</label>
-                        <select id="selectKepada" onchange="handleDepartemenChange()" class="w-full p-2 text-sm input-glass mb-2">
+                        <select id="selectKepada" onchange="handleDepartemenChange()" class="w-full p-2 text-sm input-glass mb-2 cursor-pointer">
                             <option value="GENERAL AFFAIRS" selected>General Affairs</option>
                             <option value="HUMAN RESOURCE">Human Resource</option>
                             <option value="MAINTENANCE">Maintenance</option>
@@ -435,19 +464,19 @@
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Penerima (Attendance / U.p.)</label>
-                        <input type="text" id="inputPenerima" class="w-full p-2 text-sm input-glass" placeholder="Misal: Bpk. Steve">
+                        <input type="text" id="inputPenerima" class="w-full p-2 text-sm input-glass hover:border-blue-400" placeholder="Misal: Bpk. Steve">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Alamat Penyerahan</label>
-                        <input type="text" id="inputAlamat" class="w-full p-2 text-sm input-glass" value="PT Murinda Sentra Baja, Kalijati, Subang">
+                        <input type="text" id="inputAlamat" class="w-full p-2 text-sm input-glass hover:border-blue-400" value="PT Murinda Sentra Baja, Kalijati, Subang">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Subjek / Perihal Umum</label>
-                        <input type="text" id="inputSubjek" class="w-full p-2 text-sm input-glass font-medium text-blue-900" placeholder="Misal: Permohonan Pengadaan Material Operasional (ATK)">
+                        <input type="text" id="inputSubjek" class="w-full p-2 text-sm input-glass font-medium text-blue-900 hover:border-blue-400" placeholder="Misal: Permohonan Pengadaan Material Operasional (ATK)">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Lampiran Dokumen</label>
-                        <input type="text" id="inputLampiran" class="w-full p-2 text-sm input-glass" placeholder="Misal: 1 (Satu) Berkas Penawaran Harga atau (-) jika nihil" value="-">
+                        <input type="text" id="inputLampiran" class="w-full p-2 text-sm input-glass hover:border-blue-400" placeholder="Misal: 1 (Satu) Berkas Penawaran Harga atau (-) jika nihil" value="-">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Unggah Bukti Visual (Opsional)</label>
@@ -458,7 +487,7 @@
                 <div class="lg:col-span-7 flex flex-col">
                     <div class="flex justify-between items-center mb-2 border-b border-gray-200 pb-2">
                         <h3 class="text-sm font-bold text-blue-600 uppercase tracking-wider">Konten Utama Memo</h3>
-                        <button onclick="insertItemRow()" id="btnTambahItem" class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs font-bold rounded-lg transition-all flex items-center gap-1 shadow-sm">
+                        <button onclick="insertItemRow()" id="btnTambahItem" class="px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs font-bold rounded-lg transition-all flex items-center gap-1 shadow-sm transform hover:scale-105 active:scale-95">
                             ➕ Tambah Item
                         </button>
                     </div>
@@ -475,22 +504,22 @@
                                 </tr>
                             </thead>
                             <tbody id="controlGridBody" class="bg-white">
-                                </tbody>
+                            </tbody>
                         </table>
                     </div>
 
                     <div id="containerMemoTulis" class="hidden flex-col gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">1. Kalimat Pembuka</label>
-                            <textarea id="inputKalimatPembuka" rows="2" class="w-full p-2 text-sm input-glass leading-relaxed" placeholder="Misal: Dengan hormat,..."></textarea>
+                            <textarea id="inputKalimatPembuka" rows="2" class="w-full p-2 text-sm input-glass leading-relaxed hover:border-blue-400" placeholder="Misal: Dengan hormat,..."></textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">2. Perihal Memo / Uraian Isi</label>
-                            <textarea id="inputIsiMemo" rows="6" class="w-full p-2 text-sm input-glass leading-relaxed" placeholder="Uraikan detail informasi, pesan, atau perihal memo di sini..."></textarea>
+                            <textarea id="inputIsiMemo" rows="6" class="w-full p-2 text-sm input-glass leading-relaxed hover:border-blue-400" placeholder="Uraikan detail informasi, pesan, atau perihal memo di sini..."></textarea>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">3. Kalimat Penutup</label>
-                            <textarea id="inputKalimatPenutup" rows="2" class="w-full p-2 text-sm input-glass leading-relaxed" placeholder="Misal: Demikian memorandum ini kami sampaikan,..."></textarea>
+                            <textarea id="inputKalimatPenutup" rows="2" class="w-full p-2 text-sm input-glass leading-relaxed hover:border-blue-400" placeholder="Misal: Demikian memorandum ini kami sampaikan,..."></textarea>
                         </div>
                     </div>
                 </div>
@@ -504,15 +533,55 @@
                 </div>
                 
                 <div class="flex gap-3 w-full sm:w-auto justify-end flex-wrap">
-                    <button id="actionBtnSave" onclick="saveDataToCloud()" class="w-full sm:w-auto px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm transition-all shadow-lg shadow-emerald-500/30">
-                        1. Simpan ke System Memo
+                    <button id="actionBtnSave" onclick="triggerSaveWithAnimation()" class="w-full sm:w-auto px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm transition-all duration-300 shadow-lg shadow-emerald-500/30 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+                        <span>💾</span> 1. Simpan ke System Memo
                     </button>
-                    <button id="actionBtnPrint" onclick="preparePrintLayout()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-sm transition-all opacity-50 cursor-not-allowed shadow-lg shadow-amber-500/30" disabled>
-                        2. Cetak / Unduh PDF
+                    <button id="actionBtnPrint" onclick="triggerPrintWithAnimation()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-sm transition-all duration-300 opacity-50 cursor-not-allowed shadow-lg shadow-amber-500/30 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2" disabled>
+                        <span>🖨️</span> 2. Cetak / Unduh PDF
                     </button>
                 </div>
             </div>
             <p id="cloudStatusOutput" class="text-xs text-right mt-3 font-semibold"></p>
+        </div>
+    </div>
+
+    <div id="animationOverlay" class="hidden fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300">
+        <div class="relative w-full max-w-2xl h-64 bg-gray-900 rounded-2xl border-4 border-gray-700 shadow-[0_0_50px_rgba(0,0,0,0.6)] overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-800"></div>
+            <div class="absolute top-4 right-10 w-12 h-12 bg-yellow-100 rounded-full shadow-[0_0_20px_white] opacity-80"></div>
+            
+            <div class="absolute bottom-0 left-0 w-full h-16 bg-gray-700 border-t-4 border-gray-600"></div>
+            
+            <div class="absolute bottom-6 left-0 w-[200%] h-2 flex gap-8 animate-road-move">
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+            </div>
+
+            <div id="deliveryTruckPos" class="absolute bottom-6 left-0 z-10" style="transform: translateX(-250px);">
+                <div class="animate-truck-bounce flex items-end">
+                    <div class="bg-gray-100 w-40 h-28 rounded-l-xl border-4 border-gray-400 relative flex flex-col items-center justify-center shadow-inner">
+                        <span class="text-6xl animate-bounce" style="animation-duration: 0.6s;">📄</span>
+                        <span class="text-xs font-black text-gray-700 mt-1 tracking-widest">MSB ERP</span>
+                    </div>
+                    <div class="bg-blue-600 w-20 h-20 rounded-tr-2xl rounded-br-lg border-4 border-blue-800 relative shadow-lg flex flex-col justify-between">
+                        <div class="absolute top-2 right-2 w-10 h-8 bg-cyan-200/80 rounded-tr-xl border border-gray-400"></div>
+                        <div class="absolute right-[-120px] bottom-1 w-32 h-12 bg-gradient-to-r from-yellow-300/90 to-transparent rounded-full blur-md shadow-[0_0_20px_yellow]"></div>
+                        <div class="absolute right-[-4px] bottom-3 w-3 h-5 bg-yellow-100 rounded-full shadow-[0_0_10px_white]"></div>
+                    </div>
+                    <div class="absolute bottom-[-12px] left-8 w-10 h-10 bg-gray-900 rounded-full border-4 border-gray-400 animate-spin-slow flex items-center justify-center"><div class="w-3 h-3 bg-gray-400 rounded-full"></div></div>
+                    <div class="absolute bottom-[-12px] right-4 w-10 h-10 bg-gray-900 rounded-full border-4 border-gray-400 animate-spin-slow flex items-center justify-center"><div class="w-3 h-3 bg-gray-400 rounded-full"></div></div>
+                </div>
+            </div>
+            
+            <div id="truckAnimText" class="absolute top-8 w-full text-center text-white font-black text-2xl tracking-widest animate-pulse drop-shadow-lg z-20">MEMPROSES DATA...</div>
         </div>
     </div>
 
@@ -666,7 +735,7 @@
         // ==========================================
         // CONFIGURATION PARAMETERS CONFIG DEPLOYMENT
         // ==========================================
-        const APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzGRzrD6R7nKhW741g8uLzVrR0yaedU3Hw1Q3B1ddG9T5dOoR4YumuJls_cqzWEDlNG_w/exec"; 
+        const APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzRwchKvwPK1dc-om0lHTaC1rzpiz90PWtLWRkKFblxE10DoQgs6f8trMFTEci6hMMXfQ/exec"; 
         
         const USER_AUTHORIZATION_DB = {
             "020109": { nama: "Aspuro Amarulloh Khoiri", tinyUrl: "https://tinyurl.com/MSB-Aspuro" },
@@ -680,9 +749,47 @@
         let attachmentBase64Data = "";
         let cloudGeneratedMemoNo = "";
         let cloudGeneratedDateString = "";
-        let globalItemSequence = 0;
+        let globalItemSequence = 0; // PENANDA ID TABEL
         let isReprintMode = false;
         let serverMemoHistory = [];
+
+        // --- SISTEM ANIMASI MOBIL PENGIRIMAN ---
+        function playTruckAnimation(text, callback) {
+            const overlay = document.getElementById('animationOverlay');
+            const animText = document.getElementById('truckAnimText');
+            const truckPos = document.getElementById('deliveryTruckPos');
+            
+            animText.innerText = text;
+            overlay.classList.remove('hidden');
+            
+            // Mereset Animasi agar selalu berulang dari awal setiap diklik
+            truckPos.style.animation = 'none';
+            void truckPos.offsetWidth; // Memicu proses ulang (reflow) CSS
+            truckPos.style.animation = 'truck-drive 3s cubic-bezier(0.4, 0, 0.2, 1) forwards';
+            
+            // Tunggu animasi selama 3 detik sebelum melanjutkan sistem asli
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                if(callback) callback();
+            }, 3000);
+        }
+
+        function triggerSaveWithAnimation() {
+            playTruckAnimation("MENGIRIM DATA MEMO KE CLOUD...", () => {
+                saveDataToCloud();
+            });
+        }
+
+        function triggerPrintWithAnimation() {
+            if (!cloudGeneratedMemoNo) {
+                alert("Peringatan: Harap simpan data (Buat Baru) atau pilih riwayat dokumen (Cetak Ulang) terlebih dahulu.");
+                return;
+            }
+            playTruckAnimation("MEMPERSIAPKAN DOKUMEN CETAK...", () => {
+                preparePrintLayout();
+            });
+        }
+        // ----------------------------------------
 
         function handleDepartemenChange() {
             const selectEl = document.getElementById('selectKepada');
@@ -766,7 +873,10 @@
             document.getElementById('inputIsiMemo').value = "";
             document.getElementById('inputKalimatPenutup').value = "Demikian penyampaian kami. Atas perhatian dan kerjasamanya, kami ucapkan terima kasih.";
 
+            // MENGHAPUS BERSIH SELURUH TABEL DAN MERESET ID SEQUENCE SUPAYA TIDAK BERTUMPUK (PERBAIKAN BUG)
             document.getElementById('controlGridBody').innerHTML = "";
+            globalItemSequence = 0; 
+            
             insertItemRow(); 
             handleJenisMemoChange();
         }
@@ -839,16 +949,20 @@
                 cloudGeneratedDateString = memo._date;
                 attachmentBase64Data = memo.gambarBase64 || "";
 
+                // MENGHAPUS BERSIH SELURUH TABEL DAN MERESET SEQUENCE (PERBAIKAN BUG TABEL GANDA)
                 document.getElementById('controlGridBody').innerHTML = "";
+                globalItemSequence = 0;
                 
-                // Pengecekan Dummy Tipe Print untuk Reprint
+                // Pengecekan Memo Tipe Tulis
                 if (memo.items && memo.items.length === 1 && memo.items[0].deskripsi === "[SYSTEM_MEMO_TULIS_PARAGRAF]") {
                     document.getElementById('selectJenisMemo').value = "tulis";
                     handleJenisMemoChange();
                     
-                    document.getElementById('inputKalimatPembuka').value = "[Buka data di Google Sheet untuk teks ini]";
-                    document.getElementById('inputIsiMemo').value = "[Buka data di Google Sheet untuk teks ini]";
-                    document.getElementById('inputKalimatPenutup').value = "[Buka data di Google Sheet untuk teks ini]";
+                    // PERBAIKAN BUG MEMO TULIS BLANK: 
+                    // Sekarang bisa membaca data karena backend (Code.gs) sudah di-update
+                    document.getElementById('inputKalimatPembuka').value = memo.kalimatPembuka || "";
+                    document.getElementById('inputIsiMemo').value = memo.isiMemo || "";
+                    document.getElementById('inputKalimatPenutup').value = memo.kalimatPenutup || "";
                 } else {
                     document.getElementById('selectJenisMemo').value = "pengadaan";
                     handleJenisMemoChange();
@@ -863,7 +977,7 @@
 
                 const btnPrint = document.getElementById('actionBtnPrint');
                 btnPrint.disabled = false;
-                btnPrint.classList.remove('opacity-50', 'cursor-not-allowed', 'bg-gray-400');
+                btnPrint.classList.remove('opacity-50', 'cursor-not-allowed');
                 
                 document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-purple-600 font-bold";
                 document.getElementById('cloudStatusOutput').innerText = "✔ Data System MEMO berhasil dimuat lengkap dan siap dicetak!";
@@ -882,8 +996,8 @@
             if (mode === 'reprint') {
                 isReprintMode = true;
                 
-                btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-purple-600 transition-all flex items-center gap-1";
-                btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all";
+                btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-purple-600 transition-all flex items-center gap-1 transform scale-105";
+                btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all hover:scale-105 active:scale-95";
                 
                 reprintFields.classList.remove('hidden');
                 btnSave.classList.add('hidden');
@@ -893,9 +1007,9 @@
                 
                 btnPrint.disabled = true;
                 btnPrint.classList.add('opacity-50', 'cursor-not-allowed');
-                btnPrint.classList.remove('bg-amber-500', 'hover:bg-amber-600');
+                btnPrint.classList.remove('bg-amber-500', 'hover:bg-amber-600', 'sm:w-auto');
                 btnPrint.classList.add('w-full', 'bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'hover:from-purple-500', 'hover:to-blue-500');
-                btnPrint.innerText = "🖨️ Cetak / Unduh Dokumen (Mode Reprint)";
+                btnPrint.innerHTML = "<span>🖨️</span> Cetak / Unduh Dokumen (Mode Reprint)";
                 
                 statusContainer.innerHTML = `<span class="text-purple-600 font-bold">💡 Mode Cetak Ulang Aktif:</span><br>Pilih riwayat dari dropdown. Data riwayat ini diambil dan ditarik secara otomatis dari System MEMO(Cloud).`;
                 document.getElementById('cloudStatusOutput').innerText = "";
@@ -906,8 +1020,8 @@
             } else {
                 isReprintMode = false;
                 
-                btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all";
-                btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center gap-1";
+                btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all transform scale-105";
+                btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center gap-1 hover:scale-105 active:scale-95";
                 
                 reprintFields.classList.add('hidden');
                 btnSave.classList.remove('hidden');
@@ -918,7 +1032,7 @@
                 btnPrint.disabled = true;
                 btnPrint.classList.add('opacity-50', 'cursor-not-allowed', 'bg-amber-500', 'hover:bg-amber-600', 'sm:w-auto');
                 btnPrint.classList.remove('w-full', 'bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'hover:from-purple-500', 'hover:to-blue-500');
-                btnPrint.innerText = "2. Cetak / Unduh PDF";
+                btnPrint.innerHTML = "<span>🖨️</span> 2. Cetak / Unduh PDF";
                 
                 statusContainer.innerHTML = `<span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>2. Sistem akan mengunci data dan membuka tombol <strong class="text-amber-600">Cetak PDF</strong>.`;
                 
@@ -933,7 +1047,7 @@
             globalItemSequence++;
             const tableBody = document.getElementById('controlGridBody');
             const tableRowElement = document.createElement('tr');
-            tableRowElement.className = "border-b border-gray-200 hover:bg-blue-50 transition-all";
+            tableRowElement.className = "border-b border-gray-200 hover:bg-blue-50 transition-all duration-300";
             tableRowElement.id = `item-grid-row-${globalItemSequence}`;
             
             const dropOptionsHtml = UNIT_MEASUREMENTS_OPTIONS.map(opt => 
@@ -945,15 +1059,15 @@
 
             tableRowElement.innerHTML = `
                 <td class="p-2.5 text-center font-bold text-gray-500 index-label">0</td>
-                <td class="p-1.5"><input type="text" class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs item-desc-field transition-all" placeholder="Uraikan rincian spesifikasi..." required ${inputDisabled}></td>
-                <td class="p-1.5"><input type="number" class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs text-center item-qty-field transition-all" min="1" required ${inputDisabled}></td>
+                <td class="p-1.5"><input type="text" class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs item-desc-field transition-all hover:border-blue-400" placeholder="Uraikan rincian spesifikasi..." required ${inputDisabled}></td>
+                <td class="p-1.5"><input type="number" class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs text-center item-qty-field transition-all hover:border-blue-400" min="1" required ${inputDisabled}></td>
                 <td class="p-1.5">
-                    <select class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs item-unit-field transition-all" ${inputDisabled}>
+                    <select class="w-full ${inputClassExt} border border-gray-300 rounded p-2 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-xs item-unit-field transition-all hover:border-blue-400 cursor-pointer" ${inputDisabled}>
                         ${dropOptionsHtml}
                     </select>
                 </td>
                 <td class="p-1.5 text-center">
-                    ${!isReprintMode ? `<button type="button" onclick="removeItemRow(${globalItemSequence})" class="text-red-500 hover:text-red-700 font-bold transition-transform hover:scale-125 inline-block text-sm p-1">✕</button>` : `<span class="text-gray-400 font-bold">🔒</span>`}
+                    ${!isReprintMode ? `<button type="button" onclick="removeItemRow(${globalItemSequence})" class="text-red-500 hover:text-red-700 font-bold transition-transform transform hover:scale-125 inline-block text-sm p-1">✕</button>` : `<span class="text-gray-400 font-bold">🔒</span>`}
                 </td>
             `;
             
@@ -1028,7 +1142,6 @@
                     }
                 });
             } else {
-                // Bypass logic tabel, sisipkan marker untuk database "Detail Memo" bahwa ini adalah Memo Paragraf
                 packagedItems.push({ deskripsi: "[SYSTEM_MEMO_TULIS_PARAGRAF]", qty: 1, satuan: "PCS" });
             }
 
@@ -1070,7 +1183,7 @@
                 disetujuiOleh: "Titus Chrisna Dwi Laksana"
             };
 
-            btnSave.innerText = "⏳ Menyimpan Data...";
+            btnSave.innerHTML = "<span>⏳</span> Menyimpan Data...";
             btnSave.disabled = true;
             statusIndicator.className = "text-xs text-right mt-3 text-amber-500 font-bold animate-pulse";
             statusIndicator.innerText = "Mengirim data enkripsi menuju cloud MSB ERP...";
@@ -1095,7 +1208,6 @@
                     btnPrint.disabled = false;
                     btnPrint.classList.remove('opacity-50', 'cursor-not-allowed');
                     
-                    alert(`Data memo berhasil diverifikasi dan direkam ke sistem database! Nomor Registrasi: ${cloudGeneratedMemoNo}`);
                 } else {
                     throw new Error(serverResultJson.message || "Unknown Apps Script runtime anomaly.");
                 }
@@ -1107,7 +1219,7 @@
                 alert(`Gagal menyimpan data ke cloud server: ${networkError.message}`);
             })
             .finally(() => {
-                btnSave.innerText = "1. Simpan ke System Memo";
+                btnSave.innerHTML = "<span>💾</span> 1. Simpan ke System Memo";
                 btnSave.disabled = false;
             });
         }
@@ -1126,11 +1238,6 @@
         }
 
         function preparePrintLayout() {
-            if (!cloudGeneratedMemoNo) {
-                alert("Peringatan: Harap simpan data (Buat Baru) atau pilih riwayat dokumen (Cetak Ulang) terlebih dahulu.");
-                return;
-            }
-
             const deptSelectVal = document.getElementById('selectKepada').value;
             const finalKepada = deptSelectVal === 'LAINNYA' ? document.getElementById('inputKepada').value.trim() : deptSelectVal;
 
@@ -1151,7 +1258,6 @@
                 targetImageBoxFrame.style.display = 'none';
             }
 
-            // Atur Visibilitas Konten Berdasarkan Tipe Memo
             const jenisMemo = document.getElementById('selectJenisMemo').value;
             let generatedItemCounter = 0;
 
@@ -1163,7 +1269,7 @@
                 document.getElementById('targetIsiMemo').innerText = document.getElementById('inputIsiMemo').value;
                 document.getElementById('targetKalimatPenutup').innerText = document.getElementById('inputKalimatPenutup').value;
                 
-                generatedItemCounter = 1; // Dummy count untuk keperluan Hash
+                generatedItemCounter = 1; 
             } else {
                 document.getElementById('printBodyPengadaan').style.display = 'block';
                 document.getElementById('printBodyTulis').style.display = 'none';
