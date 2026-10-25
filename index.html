@@ -51,6 +51,7 @@
                 box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
                 background: #ffffff;
             }
+            select:disabled { background: #f1f5f9; color: #64748b; cursor: not-allowed; }
             select option {
                 background: #ffffff;
                 color: #1e293b;
@@ -339,6 +340,25 @@
                 text-decoration: underline;
                 margin-top: 4px;
             }
+            .sig-qr-placeholder {
+                width: 70px;
+                height: 70px;
+                box-sizing: border-box;
+                border: 1px dashed #888;
+                background: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                font-size: 6.5pt;
+                line-height: 1.25;
+                color: #666;
+            }
+            .sig-meta {
+                font-size: 8pt;
+                color: #333;
+                margin-top: 2px;
+            }
             .security-footer {
                 margin-top: 25px;
                 border-top: 1px dashed #777;
@@ -447,6 +467,14 @@
                             <option value="pengadaan" selected>Memo Pengadaan (Tabel Digital)</option>
                             <option value="tulis">Memo Tulis (Teks Paragraf)</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Dikeluarkan Oleh (Departemen Pengirim)</label>
+                        <select id="selectDeptPengirim" class="w-full p-2 text-sm input-glass cursor-pointer hover:border-blue-400">
+                            <option value="" selected>-- Memuat daftar departemen... --</option>
+                        </select>
+                        <div id="deptMasterStatus" class="text-[11px] mt-1 font-semibold"></div>
                     </div>
 
                     <div>
@@ -645,6 +673,11 @@
                         <td id="targetPenerima" class="dotted-line"></td>
                     </tr>
                     <tr>
+                        <td class="label">From</td>
+                        <td class="separator">:</td>
+                        <td id="targetDeptPengirim" class="dotted-line"></td>
+                    </tr>
+                    <tr>
                         <td class="label">Subject</td>
                         <td class="separator">:</td>
                         <td id="targetSubjek" class="dotted-line" style="font-weight: bold;"></td>
@@ -708,15 +741,17 @@
                     </div>
                 </div>
                 <div class="sig-cell">
-                    <span class="sig-title">Acknowledged By,</span>
+                    <span class="sig-title">Approved By,</span>
                     <div class="sig-body">
                         <div class="sig-qr-wrapper">
-                            <img id="qrCodeImgApproved" class="sig-qr-img" src="" alt="Digital Signature QR">
+                            <img id="qrCodeImgApproved" class="sig-qr-img" alt="Approval QR" style="display:none;">
+                            <div id="approvalQrPlaceholder" class="sig-qr-placeholder">Belum ada<br>approval</div>
                         </div>
                         <div class="sig-details">
-                            Ditandatangani secara digital oleh:<br>
-                            Plant Engineer<br>
-                            <div class="sig-name" id="labelNamaApproved">Titus Chrisna Dwi Laksana</div>
+                            <span id="labelApprovalHeadline">Menunggu persetujuan</span>
+                            <div class="sig-name" id="labelNamaApproved">-</div>
+                            <div class="sig-meta" id="labelStatusApproved"></div>
+                            <div class="sig-meta" id="labelWaktuApproved"></div>
                         </div>
                     </div>
                 </div>
@@ -741,7 +776,7 @@
             "020109": { nama: "Aspuro Amarulloh Khoiri", tinyUrl: "https://tinyurl.com/MSB-Aspuro" },
             "123456": { nama: "Asep Suherman", tinyUrl: "https://tinyurl.com/MSB-Asep-Suherman" }
         };
-        const ACKNOWLEDGED_BY_CHRISNA_TINYURL = "https://tinyurl.com/MSB-Chrisna";
+        const QR_API_URL = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&ecc=H&margin=0&data=";
         const UNIT_MEASUREMENTS_OPTIONS = ['PCS', 'KG', 'LTR', 'MTR', 'LOT', 'SET', 'UNIT', 'BOX', 'REAM', 'LEMBAR', 'BATANG'];
         const MEMO_HISTORY_KEY = "MSB_MEMO_HISTORY";
 
@@ -752,6 +787,8 @@
         let globalItemSequence = 0; // PENANDA ID TABEL
         let isReprintMode = false;
         let serverMemoHistory = [];
+        let currentApproval = null;   // approval memo yang sedang dicetak ulang (dari sheet, kolom G-J)
+        let deptMasterList = [];      // hasil Master_Departemen
 
         // --- SISTEM ANIMASI MOBIL PENGIRIMAN ---
         function playTruckAnimation(text, callback) {
@@ -790,6 +827,73 @@
             });
         }
         // ----------------------------------------
+
+        // --- MASTER DEPARTEMEN (Code.gs ?action=master -> sheet Master_Departemen) ---
+        function setDeptPengirim(nama) {
+            const sel = document.getElementById('selectDeptPengirim');
+            nama = String(nama || "").trim();
+            if (nama && !Array.from(sel.options).some(o => o.value === nama)) {
+                const o = document.createElement('option');
+                o.value = nama; o.textContent = nama;
+                sel.appendChild(o);
+            }
+            sel.value = nama;
+        }
+
+        function renderDeptOptions(placeholderText) {
+            const sel = document.getElementById('selectDeptPengirim');
+            const current = sel.value;
+            sel.innerHTML = "";
+            const ph = document.createElement('option');
+            ph.value = "";
+            ph.textContent = placeholderText || "-- Pilih Departemen Pengirim --";
+            sel.appendChild(ph);
+            deptMasterList.forEach(d => {
+                const o = document.createElement('option');
+                o.value = d.nama; o.textContent = d.nama;
+                sel.appendChild(o);
+            });
+            if (current) setDeptPengirim(current);
+        }
+
+        function loadDeptMaster() {
+            const status = document.getElementById('deptMasterStatus');
+            status.className = "text-[11px] mt-1 font-semibold text-amber-600";
+            status.textContent = "Memuat daftar departemen...";
+
+            const showError = (msg) => {
+                deptMasterList = [];
+                renderDeptOptions("-- Daftar departemen gagal dimuat --");
+                status.className = "text-[11px] mt-1 font-semibold text-red-600";
+                status.textContent = msg + " ";
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "underline text-blue-600 hover:text-blue-800";
+                btn.textContent = "Coba lagi";
+                btn.onclick = loadDeptMaster;
+                status.appendChild(btn);
+            };
+
+            fetch(APPS_SCRIPT_WEBAPP_URL + "?action=master")
+            .then(r => r.json())
+            .then(res => {
+                if (res && !Array.isArray(res) && res.status === "error") {
+                    showError("Master departemen: " + (res.message || "terjadi kesalahan di server."));
+                    return;
+                }
+                if (!res || Array.isArray(res) || res.status !== "success" || !Array.isArray(res.departemen)) {
+                    showError("Respons server tidak dikenali. Pastikan Code.gs versi terbaru sudah di-deploy (Deploy > Manage deployments > Edit > New version).");
+                    return;
+                }
+                deptMasterList = res.departemen.filter(d => d && d.nama);
+                renderDeptOptions();
+                status.textContent = "";
+            })
+            .catch(err => {
+                console.error("Gagal memuat master departemen:", err);
+                showError("Gagal terhubung ke server.");
+            });
+        }
 
         function handleDepartemenChange() {
             const selectEl = document.getElementById('selectKepada');
@@ -844,6 +948,7 @@
                 document.getElementById('displayUser').innerText = authenticatedUserSession.nama;
                 
                 resetAppToBlank();
+                loadDeptMaster();
             } else {
                 errorLabel.classList.remove('hidden');
             }
@@ -856,6 +961,8 @@
         }
 
         function resetAppToBlank() {
+            document.getElementById('selectDeptPengirim').value = "";
+            currentApproval = null;
             document.getElementById('selectJenisMemo').value = "pengadaan";
             document.getElementById('selectKepada').value = "GENERAL AFFAIRS";
             document.getElementById('inputKepada').value = "GENERAL AFFAIRS";
@@ -946,6 +1053,8 @@
                 document.getElementById('inputLampiran').value = memo.lampiran || "-";
                 
                 cloudGeneratedMemoNo = memo._memoNo;
+                setDeptPengirim(memo.departemen || "");
+                currentApproval = memo.approval || null;
                 cloudGeneratedDateString = memo._date;
                 attachmentBase64Data = memo.gambarBase64 || "";
 
@@ -995,6 +1104,7 @@
 
             if (mode === 'reprint') {
                 isReprintMode = true;
+                document.getElementById('selectDeptPengirim').disabled = true;
                 
                 btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-purple-600 transition-all flex items-center gap-1 transform scale-105";
                 btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all hover:scale-105 active:scale-95";
@@ -1019,6 +1129,7 @@
 
             } else {
                 isReprintMode = false;
+                document.getElementById('selectDeptPengirim').disabled = false;
                 
                 btnNew.className = "px-3 py-1.5 text-xs font-bold rounded-md bg-white shadow-sm text-blue-600 transition-all transform scale-105";
                 btnReprint.className = "px-3 py-1.5 text-xs font-bold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center gap-1 hover:scale-105 active:scale-95";
@@ -1151,6 +1262,12 @@
                 return;
             }
 
+            const deptPengirimVal = document.getElementById('selectDeptPengirim').value.trim();
+            if (!deptPengirimVal) {
+                alert('Harap pilih "Dikeluarkan Oleh" (departemen pengirim memo) terlebih dahulu.');
+                return;
+            }
+
             if (!inputValidationPassed || packagedItems.length === 0) {
                 alert("Harap lengkapi semua deskripsi item yang Anda tambahkan ke tabel.");
                 return;
@@ -1180,7 +1297,7 @@
                 kalimatPenutup: document.getElementById('inputKalimatPenutup').value.trim(),
                 
                 dibuatOleh: authenticatedUserSession.nama,
-                disetujuiOleh: "Titus Chrisna Dwi Laksana"
+                departemen: deptPengirimVal
             };
 
             btnSave.innerHTML = "<span>⏳</span> Menyimpan Data...";
@@ -1237,6 +1354,23 @@
             return `MSB-SECURE-SHA256:8F${cleanHexStr}A9D3CC${cleanHexStr}E7942B`;
         }
 
+        function classifyApproval(status) {
+            const s = String(status || "").toLowerCase();
+            if (/tolak|reject|decline|tidak/.test(s)) return 'rejected';
+            if (/pending|menunggu|belum|waiting/.test(s)) return 'pending';
+            if (/approv|setuju/.test(s)) return 'approved';
+            return 'unknown';
+        }
+
+        function loadQrImage(img, url) {
+            return new Promise(resolve => {
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+                if (img.complete && img.naturalWidth > 0) resolve(true);
+            });
+        }
+
         function preparePrintLayout() {
             const deptSelectVal = document.getElementById('selectKepada').value;
             const finalKepada = deptSelectVal === 'LAINNYA' ? document.getElementById('inputKepada').value.trim() : deptSelectVal;
@@ -1249,6 +1383,7 @@
             document.getElementById('targetPenerima').innerText = document.getElementById('inputPenerima').value || "-";
             document.getElementById('targetSubjek').innerText = document.getElementById('inputSubjek').value;
             document.getElementById('targetLampiran').innerText = document.getElementById('inputLampiran').value || "-";
+            document.getElementById('targetDeptPengirim').innerText = document.getElementById('selectDeptPengirim').value || "-";
 
             const targetImageBoxFrame = document.getElementById('targetImageBox');
             if (attachmentBase64Data) {
@@ -1314,31 +1449,41 @@
             );
             document.getElementById('targetSecurityHash').innerText = (isReprintMode ? "[REPRINTED] " : "") + antiForgeryHash;
 
-            const baseQrGenerationApiUrl = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&ecc=H&margin=0&data=";
-            
+            // ----- Approval dari sheet (Detail Memo kolom G-J, hasil IMPORTRANGE)
+            const approval = (isReprintMode && currentApproval) ? currentApproval : { status: "", nama: "", tanggal: "", ttd: "" };
+            const ttdLink = String(approval.ttd || "").trim();
+            const state = classifyApproval(approval.status);
+            const showApprovalQr = !!ttdLink && state !== 'rejected' && state !== 'pending';
+
+            let headline = "Menunggu persetujuan";
+            if (showApprovalQr) headline = "Disetujui secara digital oleh:";
+            else if (state === 'rejected') headline = "Ditolak oleh:";
+            else if (state === 'approved') headline = "Disetujui oleh:";
+
             document.getElementById('labelNamaPrepared').innerText = authenticatedUserSession.nama;
-            
+            document.getElementById('labelApprovalHeadline').innerText = headline;
+            document.getElementById('labelNamaApproved').innerText = approval.nama || "-";
+            document.getElementById('labelStatusApproved').innerText = approval.status ? "Status: " + approval.status : "";
+            document.getElementById('labelWaktuApproved').innerText = approval.tanggal ? "Waktu: " + approval.tanggal : "";
+
             const imgPreparedQr = document.getElementById('qrCodeImgPrepared');
             const imgApprovedQr = document.getElementById('qrCodeImgApproved');
+            const qrPlaceholder = document.getElementById('approvalQrPlaceholder');
 
-            imgPreparedQr.src = baseQrGenerationApiUrl + encodeURIComponent(authenticatedUserSession.tinyUrl);
-            imgApprovedQr.src = baseQrGenerationApiUrl + encodeURIComponent(ACKNOWLEDGED_BY_CHRISNA_TINYURL);
+            const qrJobs = [loadQrImage(imgPreparedQr, QR_API_URL + encodeURIComponent(authenticatedUserSession.tinyUrl))];
 
-            let loadingAssetsCounter = 0;
-            const assetValidationCallback = () => {
-                loadingAssetsCounter++;
-                if (loadingAssetsCounter === 2) {
-                    setTimeout(() => {
-                        window.print();
-                    }, 450);
-                }
-            };
+            if (showApprovalQr) {
+                qrPlaceholder.style.display = 'none';
+                imgApprovedQr.style.display = 'block';
+                qrJobs.push(loadQrImage(imgApprovedQr, QR_API_URL + encodeURIComponent(ttdLink)));
+            } else {
+                imgApprovedQr.style.display = 'none';
+                imgApprovedQr.removeAttribute('src');
+                qrPlaceholder.style.display = 'flex';
+            }
 
-            imgPreparedQr.onload = assetValidationCallback;
-            imgApprovedQr.onload = assetValidationCallback;
-            
-            imgPreparedQr.onerror = () => { window.print(); };
-            imgApprovedQr.onerror = () => { window.print(); };
+            // Cetak tepat 1x setelah semua QR selesai dimuat (berhasil atau gagal)
+            Promise.all(qrJobs).then(() => setTimeout(() => window.print(), 450));
         }
     </script>
 </body>
