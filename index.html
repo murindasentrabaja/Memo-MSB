@@ -241,7 +241,7 @@
             /* ---------- Informasi memo ---------- */
             .meta-card {
                 flex: 1;
-                background: #f5f8fc;
+                background: transparent;
                 border: 1px solid #dbe3ef;
                 border-radius: 10px;
                 padding: 7px 16px;
@@ -305,9 +305,10 @@
                 overflow: hidden;
             }
             .items-table th {
-                background-color: #0a4194 !important;
-                color: #fff !important;
+                background-color: transparent !important;
+                color: #0a4194 !important;
                 border: none;
+                border-bottom: 1.5px solid #0a4194;
                 padding: 7px 9px;
                 font-weight: 600;
                 font-size: 8.5pt;
@@ -321,14 +322,15 @@
                 padding: 4px 9px;
                 font-size: 9.5pt;
             }
-            .items-table tbody tr:nth-child(even) td { background-color: #f7f9fc; }
+            .items-table tbody tr:nth-child(even) td { background-color: transparent; }
             .items-table tbody tr:last-child td { border-bottom: none; }
             .text-center { text-align: center; }
             .text-left { text-align: left; }
 
             /* ---------- Tanda tangan digital ---------- */
             .secure-bg {
-                background-image: linear-gradient(135deg, #f8fbff 0%, #eaf1fb 100%) !important;
+                background: none !important;
+                background-image: none !important;
             }
             .sig-container {
                 display: block;
@@ -349,7 +351,7 @@
                 padding: 11px 14px;
                 border: 1px solid #dbe3ef;
                 border-radius: 10px;
-                background-image: linear-gradient(135deg, #f8fbff 0%, #eaf1fb 100%);
+                background: transparent;
             }
             .sig-title {
                 display: block;
@@ -421,6 +423,7 @@
                 border-left: 4px solid #0a4194;
                 border-radius: 10px;
                 color: #0f172a !important;
+                background: transparent;
                 page-break-inside: avoid;
             }
             .vp-qr-img {
@@ -468,7 +471,7 @@
                 font-size: 7pt;
                 font-weight: 600;
                 color: #0a4194 !important;
-                background: #fff;
+                background: transparent;
                 padding: 3px 8px;
                 border: 1px solid #cdd9ea;
                 border-radius: 6px;
@@ -491,21 +494,20 @@
             <div class="mb-4">
                 <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Pilih Nama Pengguna</label>
                 <select id="usernameSelect" class="w-full p-2.5 rounded input-glass text-sm font-medium hover:border-blue-400 transition-all cursor-pointer" required>
-                    <option value="" disabled selected>-- Pilih Personel --</option>
-                    <option value="020109">Aspuro Amarulloh Khoiri (Plant Administration)</option>
-                    <option value="123456">Asep Suherman (Alternate)</option>
+                    <option value="" disabled selected>⏳ Memuat daftar personel...</option>
                 </select>
+                <p id="loginUsersStatus" class="text-[11px] mt-1 font-semibold text-amber-600"></p>
             </div>
             <div class="mb-6">
-                <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Kode Kunci Akses (Password)</label>
-                <input type="password" id="passwordInput" class="w-full p-2.5 rounded input-glass text-sm tracking-widest hover:border-blue-400 transition-all" placeholder="••••••••" required>
+                <label class="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">Password (NIK Karyawan)</label>
+                <input type="password" id="passwordInput" class="w-full p-2.5 rounded input-glass text-sm tracking-widest hover:border-blue-400 transition-all" placeholder="Masukkan NIK Anda" autocomplete="off" required>
             </div>
-            <button type="submit" class="w-full py-3 btn-gradient text-white rounded-lg font-bold text-sm shadow-lg shadow-blue-500/30 transform transition-all duration-300 hover:scale-[1.02] active:scale-95">
+            <button type="submit" id="btnLogin" class="w-full py-3 btn-gradient text-white rounded-lg font-bold text-sm shadow-lg shadow-blue-500/30 transform transition-all duration-300 hover:scale-[1.02] active:scale-95">
                 Masuk ke Sistem
             </button>
         </form>
         <p id="loginErrorMsg" class="text-red-500 text-xs font-bold mt-4 text-center hidden flex items-center justify-center gap-1">
-            ❌ Kata sandi tidak cocok dengan personel yang dipilih.
+            <span id="loginErrorText">❌ Password (NIK) tidak cocok dengan personel yang dipilih.</span>
         </p>
     </div>
 
@@ -824,12 +826,14 @@
                     <span class="sig-title">Prepared By</span>
                     <div class="sig-body">
                         <div class="sig-qr-wrapper">
-                            <img id="qrCodeImgPrepared" class="sig-qr-img" src="" alt="Digital Signature QR">
+                            <img id="qrCodeImgPrepared" class="sig-qr-img" alt="Digital Signature QR" style="display:none;">
+                            <div id="preparedQrPlaceholder" class="sig-qr-placeholder">TTD digital<br>belum ada</div>
                         </div>
                         <div class="sig-details">
                             Ditandatangani secara digital oleh:<br>
                             
                             <div class="sig-name" id="labelNamaPrepared">-</div>
+                            <div class="sig-meta" id="labelJabatanPrepared"></div>
                         </div>
                     </div>
                 </div>
@@ -869,10 +873,8 @@
         // ==========================================
         const APPS_SCRIPT_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzXxV0YisdQ6I9-Fig8rlNi8y70hfQU5PqIYdyLfp2wIv-FXOt5v10BB7qUAPujDZl3EA/exec"; 
         
-        const USER_AUTHORIZATION_DB = {
-            "020109": { nama: "Aspuro Amarulloh Khoiri", tinyUrl: "https://tinyurl.com/MSB-Aspuro" },
-            "123456": { nama: "Asep Suherman", tinyUrl: "https://tinyurl.com/MSB-Asep-Suherman" }
-        };
+        // Login: daftar personel, password (NIK) dan link Digital Sign diambil dari sheet "Login" lewat Code.gs.
+        // Tidak ada data user atau NIK yang disimpan di file ini.
         const QR_API_URL = "https://api.qrserver.com/v1/create-qr-code/?size=150x150&ecc=H&margin=0&data=";
 
         // QR Validasi Dokumen: link diambil dari kolom "Link Validasi" di sheet (Detail Memo / Memo Tulis).
@@ -883,7 +885,10 @@
         const UNIT_MEASUREMENTS_OPTIONS = ['PCS', 'KG', 'LTR', 'MTR', 'LOT', 'SET', 'UNIT', 'BOX', 'REAM', 'LEMBAR', 'BATANG'];
         const MEMO_HISTORY_KEY = "MSB_MEMO_HISTORY";
 
-        let authenticatedUserSession = null;
+        let authenticatedUserSession = null;   // { nama, jabatan, departemen, digitalSign } dari sheet Login
+        let sessionToken = "";                 // token sesi dari server (berlaku 6 jam)
+        let loginUserList = [];                // pilihan nama di halaman login
+        let currentPembuat = null;             // pembuat memo yang sedang dicetak ulang (dari sheet)
         let attachmentBase64Data = "";
         let cloudGeneratedMemoNo = "";
         let cloudGeneratedDateString = "";
@@ -1033,40 +1038,141 @@
             }
         }
 
+        // --- LOGIN (Code.gs ?action=users -> daftar nama; POST action "login" -> cek NIK di server) ---
+        function loadLoginUsers() {
+            const sel = document.getElementById('usernameSelect');
+            const status = document.getElementById('loginUsersStatus');
+            sel.innerHTML = '<option value="" disabled selected>⏳ Memuat daftar personel...</option>';
+            status.className = "text-[11px] mt-1 font-semibold text-amber-600";
+            status.textContent = "Mengambil daftar personel dari sheet Login...";
+
+            const showError = (msg) => {
+                loginUserList = [];
+                sel.innerHTML = '<option value="" disabled selected>-- Daftar personel gagal dimuat --</option>';
+                status.className = "text-[11px] mt-1 font-semibold text-red-600";
+                status.textContent = msg + " ";
+                const btn = document.createElement('button');
+                btn.type = "button";
+                btn.className = "underline text-blue-600 hover:text-blue-800";
+                btn.textContent = "Coba lagi";
+                btn.onclick = loadLoginUsers;
+                status.appendChild(btn);
+            };
+
+            fetch(APPS_SCRIPT_WEBAPP_URL + "?action=users")
+            .then(r => r.json())
+            .then(res => {
+                if (res && !Array.isArray(res) && res.status === "error") {
+                    showError(res.message || "Terjadi kesalahan di server.");
+                    return;
+                }
+                if (!res || Array.isArray(res) || res.status !== "success" || !Array.isArray(res.users)) {
+                    showError("Respons server tidak dikenali. Pastikan Code.gs versi terbaru sudah di-deploy (Deploy > Manage deployments > Edit > New version).");
+                    return;
+                }
+                loginUserList = res.users.filter(u => u && u.nama);
+                sel.innerHTML = '<option value="" disabled selected>-- Pilih Personel --</option>';
+                loginUserList.forEach(u => {
+                    const o = document.createElement('option');
+                    o.value = u.nama;
+                    o.textContent = u.nama + (u.jabatan ? " (" + u.jabatan + ")" : "");
+                    sel.appendChild(o);
+                });
+                status.textContent = "";
+            })
+            .catch(err => {
+                console.error("Gagal memuat daftar personel:", err);
+                showError("Gagal terhubung ke server.");
+            });
+        }
+
         function executeLogin(event) {
-            event.preventDefault(); 
-            const selectedToken = document.getElementById('usernameSelect').value;
+            event.preventDefault();
+            const selectedNama = document.getElementById('usernameSelect').value;
             const inputtedPassword = document.getElementById('passwordInput').value.trim();
             const errorLabel = document.getElementById('loginErrorMsg');
+            const errorText = document.getElementById('loginErrorText');
+            const btnLogin = document.getElementById('btnLogin');
 
-            if (!selectedToken) {
+            if (!selectedNama) {
                 alert("Harap pilih personel terlebih dahulu.");
                 return;
             }
 
-            if (USER_AUTHORIZATION_DB[selectedToken] && selectedToken === inputtedPassword) {
-                authenticatedUserSession = USER_AUTHORIZATION_DB[selectedToken];
-                errorLabel.classList.add('hidden');
+            const setError = (msg) => {
+                errorText.textContent = "❌ " + msg;
+                errorLabel.classList.remove('hidden');
+            };
+
+            errorLabel.classList.add('hidden');
+            btnLogin.disabled = true;
+            btnLogin.textContent = "Memeriksa...";
+
+            fetch(APPS_SCRIPT_WEBAPP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "login", nama: selectedNama, password: inputtedPassword })
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (!res || res.status !== "success" || !res.token || !res.user) {
+                    setError((res && res.message) || "Login gagal. Periksa kembali nama dan password (NIK).");
+                    return;
+                }
+
+                sessionToken = res.token;
+                authenticatedUserSession = {
+                    nama: res.user.nama || selectedNama,
+                    jabatan: res.user.jabatan || "",
+                    departemen: res.user.departemen || "",
+                    digitalSign: res.user.digitalSign || ""
+                };
+
+                document.getElementById('passwordInput').value = "";
                 document.getElementById('loginArea').classList.add('hidden');
                 document.getElementById('appArea').classList.remove('hidden');
                 document.getElementById('displayUser').innerText = authenticatedUserSession.nama;
-                
+
                 resetAppToBlank();
                 loadDeptMaster();
-            } else {
-                errorLabel.classList.remove('hidden');
-            }
+            })
+            .catch(err => {
+                console.error("Gagal login:", err);
+                setError("Gagal terhubung ke server. Periksa koneksi atau URL Apps Script.");
+            })
+            .finally(() => {
+                btnLogin.disabled = false;
+                btnLogin.textContent = "Masuk ke Sistem";
+            });
+        }
+
+        function handleSessionExpired(message) {
+            alert(message || "Sesi login sudah berakhir. Silakan login ulang.");
+            location.reload();
         }
 
         function executeLogout() {
-            if(confirm("Apakah Anda ingin keluar dari sistem e-Memo?")) {
-                location.reload();
-            }
+            if (!confirm("Apakah Anda ingin keluar dari sistem e-Memo?")) return;
+
+            const token = sessionToken;
+            sessionToken = "";
+            if (!token) { location.reload(); return; }
+
+            // Hapus sesi di server dulu, lalu muat ulang halaman (paling lama menunggu 1,5 detik)
+            let reloaded = false;
+            const done = () => { if (!reloaded) { reloaded = true; location.reload(); } };
+            fetch(APPS_SCRIPT_WEBAPP_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ action: "logout", token: token })
+            }).then(done, done);
+            setTimeout(done, 1500);
         }
 
         function resetAppToBlank() {
             document.getElementById('selectDeptPengirim').value = "";
             currentApproval = null;
+            currentPembuat = null;
             currentValidationLink = "";
             document.getElementById('selectJenisMemo').value = "pengadaan";
             document.getElementById('selectKepada').value = "GENERAL AFFAIRS";
@@ -1161,6 +1267,7 @@
                 setDeptPengirim(memo.departemen || "");
                 currentApproval = memo.approval || null;
                 currentValidationLink = String(memo.linkValidasi || "").trim();
+                currentPembuat = memo.pembuat || null;
                 cloudGeneratedDateString = memo._date;
                 attachmentBase64Data = memo.gambarBase64 || "";
 
@@ -1402,7 +1509,7 @@
                 isiMemo: document.getElementById('inputIsiMemo').value.trim(),
                 kalimatPenutup: document.getElementById('inputKalimatPenutup').value.trim(),
                 
-                dibuatOleh: authenticatedUserSession.nama,
+                token: sessionToken,   // pembuat memo ditentukan server dari sesi login
                 departemen: deptPengirimVal
             };
 
@@ -1431,6 +1538,8 @@
                     btnPrint.disabled = false;
                     btnPrint.classList.remove('opacity-50', 'cursor-not-allowed');
                     
+                } else if (serverResultJson.code === 'SESSION_EXPIRED') {
+                    handleSessionExpired(serverResultJson.message);
                 } else {
                     throw new Error(serverResultJson.message || "Unknown Apps Script runtime anomaly.");
                 }
@@ -1597,9 +1706,13 @@
                 }
             }
 
+            // Prepared By: memo baru = user yang login; cetak ulang = pembuat asli memo (kolom "Dibuat Oleh").
+            // Tanda tangan digitalnya diambil dari kolom "Digital Sign" sheet Login milik orang tersebut.
+            const preparer = (isReprintMode && currentPembuat && currentPembuat.nama) ? currentPembuat : authenticatedUserSession;
+
             const antiForgeryHash = computeSecurityHashSignature(
                 cloudGeneratedMemoNo, 
-                authenticatedUserSession.nama, 
+                preparer.nama, 
                 document.getElementById('inputSubjek').value,
                 generatedItemCounter
             );
@@ -1616,7 +1729,8 @@
             else if (state === 'rejected') headline = "Ditolak oleh:";
             else if (state === 'approved') headline = "Disetujui oleh:";
 
-            document.getElementById('labelNamaPrepared').innerText = authenticatedUserSession.nama;
+            document.getElementById('labelNamaPrepared').innerText = preparer.nama || "-";
+            document.getElementById('labelJabatanPrepared').innerText = preparer.jabatan || "";
             document.getElementById('labelApprovalHeadline').innerText = headline;
             document.getElementById('labelNamaApproved').innerText = approval.nama || "-";
             document.getElementById('labelStatusApproved').innerText = approval.status ? "Status: " + approval.status : "";
@@ -1626,7 +1740,19 @@
             const imgApprovedQr = document.getElementById('qrCodeImgApproved');
             const qrPlaceholder = document.getElementById('approvalQrPlaceholder');
 
-            const qrJobs = [loadQrImage(imgPreparedQr, QR_API_URL + encodeURIComponent(authenticatedUserSession.tinyUrl))];
+            const preparedSignLink = String(preparer.digitalSign || "").trim();
+            const preparedPlaceholder = document.getElementById('preparedQrPlaceholder');
+            const qrJobs = [];
+
+            if (/^https?:\/\//i.test(preparedSignLink)) {
+                preparedPlaceholder.style.display = 'none';
+                imgPreparedQr.style.display = 'block';
+                qrJobs.push(loadQrImage(imgPreparedQr, QR_API_URL + encodeURIComponent(preparedSignLink)));
+            } else {
+                imgPreparedQr.style.display = 'none';
+                imgPreparedQr.removeAttribute('src');
+                preparedPlaceholder.style.display = 'flex';
+            }
 
             if (showApprovalQr) {
                 qrPlaceholder.style.display = 'none';
@@ -1654,6 +1780,9 @@
                 setTimeout(() => window.print(), 450);
             });
         }
+
+        // Muat daftar personel login saat halaman dibuka
+        loadLoginUsers();
     </script>
 </body>
 </html>
