@@ -112,21 +112,31 @@
         /* ==========================================================================
            PRINT STYLING (Official Corporate Document Standard)
            ========================================================================= */
-        @media print {
+    </style>
+    <style id="printStyles" media="print">
+            /* ==========================================================
+               DOKUMEN MEMO: palet mengikuti logo MSB (biru #0a4194, merah #c1272d)
+               ========================================================== */
             @page {
                 size: A4;
-                margin: 20mm 15mm 15mm 15mm;
+                margin: 14mm 15mm 12mm 15mm;
+            }
+            html, body {
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
             }
             body {
-                background: white !important;
-                color: black !important;
-                font-family: Arial, Helvetica, sans-serif !important;
-                margin: 0;
-                padding: 0;
-                font-size: 10pt;
-                line-height: 1.4;
+                display: block !important;
+                background: #fff !important;
+                color: #0f172a !important;
+                font-family: 'Inter', Arial, Helvetica, sans-serif !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                font-size: 9.5pt;
+                line-height: 1.5;
                 position: relative;
-                
+
                 -webkit-touch-callout: none;
                 -webkit-user-select: none;
                 -khtml-user-select: none;
@@ -143,208 +153,248 @@
                 position: relative;
                 z-index: 1;
             }
-            
-            #printArea::before {
-                content: "PT Murinda Sentra Baja";
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%) rotate(-45deg);
-                font-size: 55pt;
-                font-weight: 900;
-                color: rgba(200, 210, 225, 0.25);
-                white-space: nowrap;
-                z-index: -1;
-                pointer-events: none;
-                font-family: 'Inter', sans-serif;
-                letter-spacing: 4px;
-            }
-            
-            .secure-bg {
-                background-image: repeating-linear-gradient(
-                    45deg,
-                    rgba(150, 150, 150, 0.05) 0px,
-                    rgba(150, 150, 150, 0.05) 2px,
-                    transparent 2px,
-                    transparent 8px
-                ) !important;
+            #printArea, #printArea * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
+            #printArea p { margin: 0 0 7px 0; }
 
+            /* ---------- Kop surat ---------- */
             .kop-container {
                 display: flex !important;
                 justify-content: space-between !important;
-                align-items: flex-start !important;
-                border-bottom: 3px solid #000 !important;
-                padding-bottom: 10px !important;
-                margin-bottom: 15px !important;
+                align-items: center !important;
+                gap: 28px !important;
+                position: relative;
+                padding-bottom: 12px !important;
+                margin-bottom: 12px !important;
                 width: 100% !important;
             }
-            .kop-left {
-                width: 35% !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: space-between !important;
+            .kop-container::after {
+                content: "";
+                position: absolute;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: 3px;
+                border-radius: 2px;
+                background: linear-gradient(90deg, #c1272d 0, #c1272d 46px, #0a4194 46px, #0a4194 100%);
             }
+            .kop-left { flex: 0 0 auto !important; }
             .kop-logo {
-                width: 165px !important;
+                width: 158px !important;
                 height: auto !important;
                 object-fit: contain !important;
-                margin-bottom: 12px !important;
-            }
-            .document-title {
-                font-size: 34pt !important;
-                font-weight: 900 !important;
-                letter-spacing: 1px !important;
-                color: #000 !important;
-                line-height: 1 !important;
-                margin: 0 !important;
+                display: block !important;
             }
             .kop-right {
-                width: 62% !important;
-                display: flex !important;
-                flex-direction: column !important;
-                justify-content: flex-start !important;
+                flex: 1 1 auto !important;
+                min-width: 0;
             }
             .company-title {
-                font-size: 16pt !important;
-                font-weight: bold !important;
-                color: #000 !important;
-                margin-bottom: 6px !important;
-                letter-spacing: 0.5px !important;
+                font-size: 9.5pt !important;
+                font-weight: 700 !important;
+                color: #0a4194 !important;
+                letter-spacing: 0.3px !important;
+                margin-bottom: 4px !important;
             }
             .address-row {
                 display: flex !important;
-                justify-content: space-between !important;
-                gap: 15px !important;
+                gap: 16px !important;
             }
             .address-col {
-                width: 50% !important;
-                font-size: 7.5pt !important;
-                line-height: 1.35 !important;
-                color: #000 !important;
+                flex: 1 1 0 !important;
+                font-size: 6.8pt !important;
+                line-height: 1.5 !important;
+                color: #475569 !important;
             }
-            
+            .address-col strong { color: #0f172a; font-weight: 700; }
+
+            /* ---------- Judul + nomor memo ---------- */
+            .doc-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                margin-bottom: 10px;
+            }
+            .document-title {
+                font-size: 27pt;
+                font-weight: 800;
+                letter-spacing: 3px;
+                color: #0a4194;
+                line-height: 1;
+                margin: 0;
+            }
+            .doc-ref { text-align: right; }
+            #targetMemoNo {
+                font-size: 11pt;
+                font-weight: 700;
+                letter-spacing: 0.3px;
+                color: #0f172a;
+            }
+            #targetMemoDate {
+                font-size: 8.5pt;
+                color: #64748b;
+                margin-top: 1px;
+            }
+
+            /* ---------- Informasi memo ---------- */
+            .meta-card {
+                flex: 1;
+                background: #f5f8fc;
+                border: 1px solid #dbe3ef;
+                border-radius: 10px;
+                padding: 7px 16px;
+            }
             .meta-table {
                 width: 100%;
                 border-collapse: collapse;
-                margin-top: 15px;
-                margin-bottom: 15px;
+                margin: 0;
             }
             .meta-table td {
-                padding: 4px 0;
+                padding: 3px 0;
                 vertical-align: top;
+                font-size: 9.5pt;
             }
             .meta-table td.label {
-                width: 90px;
+                width: 78px;
+                color: #64748b;
+                font-size: 8.5pt;
+                font-weight: 500;
+                padding-top: 5px;
             }
             .meta-table td.separator {
-                width: 15px;
+                width: 12px;
                 text-align: center;
+                color: #94a3b8;
             }
-            .dotted-line {
-                border-bottom: 1px dotted #000;
+            .dotted-line { border-bottom: 1px solid #dbe3ef; }
+            .to-name {
+                font-size: 11.5pt;
+                font-weight: 700;
+                color: #0a4194;
+                text-transform: uppercase;
+                letter-spacing: 0.2px;
             }
             .image-attachment-box {
                 width: 140px;
                 text-align: center;
-                font-size: 8pt;
-                font-weight: bold;
+                font-size: 7.5pt;
+                font-weight: 600;
+                color: #64748b;
                 flex-shrink: 0;
             }
             .image-attachment-box img {
                 width: 100%;
                 max-height: 140px;
                 object-fit: contain;
-                border: 1px solid #000;
+                border: 1px solid #dbe3ef;
+                border-radius: 8px;
                 margin-top: 4px;
                 background: #fff;
             }
+
+            /* ---------- Tabel barang ---------- */
             .items-table {
                 width: 100%;
-                border-collapse: collapse;
-                margin-top: 15px;
-                margin-bottom: 20px;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin: 10px 0 12px 0;
+                border: 1px solid #dbe3ef;
+                border-radius: 10px;
+                overflow: hidden;
             }
             .items-table th {
-                background-color: #f2f2f2 !important;
-                border: 1px solid #000;
-                padding: 7px;
-                font-weight: bold;
-                font-size: 9.5pt;
+                background-color: #0a4194 !important;
+                color: #fff !important;
+                border: none;
+                padding: 7px 9px;
+                font-weight: 600;
+                font-size: 8.5pt;
+                letter-spacing: 0.4px;
                 text-align: center;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
             }
+            .items-table th:nth-child(2) { text-align: left; }
             .items-table td {
-                border: 1px solid #000;
-                padding: 7px;
+                border: none;
+                border-bottom: 1px solid #e6ecf5;
+                padding: 4px 9px;
                 font-size: 9.5pt;
             }
+            .items-table tbody tr:nth-child(even) td { background-color: #f7f9fc; }
+            .items-table tbody tr:last-child td { border-bottom: none; }
             .text-center { text-align: center; }
             .text-left { text-align: left; }
+
+            /* ---------- Tanda tangan digital ---------- */
+            .secure-bg {
+                background-image: linear-gradient(135deg, #f8fbff 0%, #eaf1fb 100%) !important;
+            }
             .sig-container {
-                display: table;
+                display: block;
                 width: 100%;
-                margin-top: 35px;
-                border: 1px solid #000;
+                margin-top: 16px;
+                border: none;
                 page-break-inside: avoid;
             }
+            .sig-container.secure-bg { background-image: none !important; }
             .sig-row {
-                display: table-row;
+                display: flex;
+                gap: 12px;
             }
             .sig-cell {
-                display: table-cell;
-                width: 50%;
-                border-right: 1px solid #000;
-                padding: 10px;
-                vertical-align: top;
-            }
-            .sig-cell:last-child {
-                border-right: none;
+                display: block;
+                flex: 1 1 0;
+                min-width: 0;
+                padding: 11px 14px;
+                border: 1px solid #dbe3ef;
+                border-radius: 10px;
+                background-image: linear-gradient(135deg, #f8fbff 0%, #eaf1fb 100%);
             }
             .sig-title {
-                font-weight: bold;
-                font-size: 9.5pt;
-                margin-bottom: 8px;
                 display: block;
+                margin-bottom: 8px;
+                font-size: 7.5pt;
+                font-weight: 700;
+                letter-spacing: 0.9px;
+                text-transform: uppercase;
+                color: #0a4194;
             }
             .sig-body {
-                display: table;
-                width: 100%;
+                display: flex;
+                align-items: center;
+                gap: 12px;
             }
-            .sig-qr-wrapper {
-                display: table-cell;
-                width: 75px;
-                vertical-align: middle;
-            }
+            .sig-qr-wrapper { flex: 0 0 auto; }
             .sig-qr-img {
                 width: 70px;
                 height: 70px;
                 display: block;
+                box-sizing: border-box;
+                padding: 3px;
                 background: #fff;
-                padding: 2px;
-                border: 1px solid #ccc;
+                border: 1px solid #dbe3ef;
+                border-radius: 8px;
             }
             .sig-details {
-                display: table-cell;
-                vertical-align: middle;
-                padding-left: 12px;
-                font-size: 8.5pt;
-                line-height: 1.3;
+                flex: 1 1 auto;
+                min-width: 0;
+                font-size: 7.5pt;
+                line-height: 1.4;
+                color: #64748b;
             }
             .sig-name {
                 font-size: 10pt;
-                font-weight: bold;
-                text-decoration: underline;
-                margin-top: 4px;
+                font-weight: 700;
+                color: #0f172a;
+                margin-top: 3px;
             }
             .sig-qr-placeholder {
                 width: 70px;
                 height: 70px;
                 box-sizing: border-box;
-                border: 1px dashed #888;
+                border: 1px dashed #b6c3d8;
+                border-radius: 8px;
                 background: #fff;
                 display: flex;
                 align-items: center;
@@ -352,98 +402,87 @@
                 text-align: center;
                 font-size: 6.5pt;
                 line-height: 1.25;
-                color: #666;
+                color: #94a3b8;
             }
             .sig-meta {
-                font-size: 8pt;
-                color: #333;
+                font-size: 7.5pt;
+                color: #64748b;
                 margin-top: 2px;
             }
-            /* Panel Validasi Dokumen: terpisah dari blok tanda tangan / approval */
+
+            /* ---------- Panel validasi dokumen ---------- */
             .validation-panel {
                 display: flex;
                 align-items: center;
                 gap: 16px;
-                margin-top: 20px;
-                padding: 11px 14px;
-                border: 1px solid #cfd6df;
-                border-left: 5px solid #111827;
-                border-radius: 6px;
-                background-color: #f7f9fb;
-                color: #222 !important;
+                margin-top: 10px;
+                padding: 10px 16px;
+                border: 1px solid #dbe3ef;
+                border-left: 4px solid #0a4194;
+                border-radius: 10px;
+                color: #0f172a !important;
                 page-break-inside: avoid;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
             }
             .vp-qr-img {
-                width: 94px;
-                height: 94px;
+                width: 88px;
+                height: 88px;
                 flex-shrink: 0;
                 display: block;
                 box-sizing: border-box;
                 padding: 5px;
                 background: #fff;
-                border: 1px solid #111827;
-                border-radius: 6px;
+                border: 1px solid #dbe3ef;
+                border-radius: 8px;
             }
-            .vp-body {
-                flex: 1;
-                min-width: 0;
-            }
+            .vp-body { flex: 1; min-width: 0; }
             .vp-eyebrow {
                 font-size: 6.5pt;
-                font-weight: bold;
-                letter-spacing: 1.2px;
+                font-weight: 700;
+                letter-spacing: 1px;
                 text-transform: uppercase;
-                color: #4b5563;
+                color: #0a4194;
             }
             .vp-title {
-                font-size: 11.5pt;
-                font-weight: bold;
-                color: #111827;
+                font-size: 11pt;
+                font-weight: 700;
+                color: #0f172a;
                 margin: 2px 0 4px 0;
             }
             .vp-text {
-                font-size: 7.5pt;
-                line-height: 1.35;
-                color: #374151;
-                text-align: justify;
+                font-size: 7.4pt;
+                line-height: 1.45;
+                color: #475569;
+                text-align: left;
             }
             .vp-hash-label {
                 display: block;
                 margin-top: 6px;
-                font-size: 6.5pt;
-                font-weight: bold;
-                letter-spacing: 0.6px;
+                font-size: 6.3pt;
+                font-weight: 600;
+                letter-spacing: 0.8px;
                 text-transform: uppercase;
-                color: #4b5563;
+                color: #64748b;
             }
             .security-hash {
-                font-family: "Courier New", Courier, monospace;
-                font-size: 7.5pt;
-                font-weight: bold;
-                color: #111 !important;
+                font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+                font-size: 7pt;
+                font-weight: 600;
+                color: #0a4194 !important;
                 background: #fff;
-                padding: 2px 6px;
-                border: 1px solid #d1d5db;
-                border-radius: 3px;
+                padding: 3px 8px;
+                border: 1px solid #cdd9ea;
+                border-radius: 6px;
                 display: inline-block;
-                margin-top: 2px;
+                margin-top: 3px;
                 word-break: break-all;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
             }
-        }
     </style>
 </head>
 <body class="flex items-center justify-center p-3 md:p-6">
 
     <div id="loginArea" class="glass-panel p-8 w-full max-w-md mx-auto my-12">
         <div class="text-center mb-8">
-            <div class="inline-block text-left border-b-2 border-indigo-200 pb-2 mb-3">
-                <span class="text-2xl font-black text-blue-700 tracking-wider"></span><br>
-                <span class="text-[9px] font-bold text-gray-500 tracking-widest block -mt-1">PT MURINDA SENTRA BAJA</span>
-            </div>
+            <img src="MSB Logo.png" alt="Logo PT Murinda Sentra Baja" class="mx-auto mb-4 w-48 max-w-[70%] h-auto select-none" draggable="false">
             <h2 class="text-lg font-bold text-gray-800 tracking-wide mt-2">Sistem Verifikasi Digital Memo</h2>
             <p class="text-xs text-gray-500">Kalijati Plant, Subang - West Java</p>
         </div>
@@ -671,7 +710,6 @@
         <div class="kop-container">
             <div class="kop-left">
                 <img src="MSB Logo.png" alt="Logo MSB" class="kop-logo">
-                <div class="document-title">MEMO</div>
             </div>
             
             <div class="kop-right">
@@ -698,26 +736,29 @@
             </div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 10.5pt; margin-bottom: 12px;">
-            <div id="targetMemoNo">MSB/MEMO/---</div>
-            <div id="targetMemoDate">Kalijati, --/--/----</div>
+        <div class="doc-head">
+            <div class="document-title">MEMO</div>
+            <div class="doc-ref">
+                <div id="targetMemoNo">MSB/MEMO/---</div>
+                <div id="targetMemoDate">Kalijati, --/--/----</div>
+            </div>
         </div>
 
-        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; min-height: 125px;">
-            <div style="flex: 1;">
-                <table class="meta-table" style="margin-top: 0;">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; min-height: 100px;">
+            <div class="meta-card">
+                <table class="meta-table">
                     <tr>
                         <td class="label">Dear,</td>
                         <td class="separator"></td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="padding-bottom: 8px;"><strong style="font-size: 12pt; text-transform: uppercase;" id="targetKepada">GENERAL AFFAIRS</strong></td>
+                        <td colspan="3" style="padding-bottom: 8px;"><strong class="to-name" id="targetKepada">GENERAL AFFAIRS</strong></td>
                     </tr>
                     <tr>
                         <td class="label">Address</td>
                         <td class="separator">:</td>
-                        <td id="targetAlamat">Plant Murinda Kalijati, Subang</td>
+                        <td id="targetAlamat" class="dotted-line">Plant Murinda Kalijati, Subang</td>
                     </tr>
                     <tr>
                         <td class="label">Attendance</td>
@@ -749,7 +790,7 @@
         </div>
 
         <div id="printBodyPengadaan">
-            <div style="margin-top: 15px; text-align: justify;">
+            <div style="margin-top: 15px; text-align: left;">
                 <p>Dengan hormat,</p>
                 <p>Bersama dengan memorandum ini, kami sampaikan permohonan pengadaan barang/material operasional guna mendukung kelancaran aktivitas kerja di lingkungan PT Murinda Sentra Baja Plant Kalijati, dengan rincian spesifikasi dan volume kebutuhan sebagai berikut:</p>
             </div>
@@ -771,16 +812,16 @@
             </div>
         </div>
 
-        <div id="printBodyTulis" style="display: none; margin-top: 15px; text-align: justify; line-height: 1.5;">
-            <p id="targetKalimatPembuka" style="white-space: pre-wrap; font-family: Arial, Helvetica, sans-serif;"></p>
-            <p id="targetIsiMemo" style="white-space: pre-wrap; font-family: Arial, Helvetica, sans-serif; margin: 15px 0; font-weight: bold;"></p>
-            <p id="targetKalimatPenutup" style="white-space: pre-wrap; font-family: Arial, Helvetica, sans-serif;"></p>
+        <div id="printBodyTulis" style="display: none; margin-top: 15px; text-align: left; line-height: 1.55;">
+            <p id="targetKalimatPembuka" style="white-space: pre-wrap; font-family: inherit;"></p>
+            <p id="targetIsiMemo" style="white-space: pre-wrap; font-family: inherit; margin: 15px 0; font-weight: bold;"></p>
+            <p id="targetKalimatPenutup" style="white-space: pre-wrap; font-family: inherit;"></p>
         </div>
 
         <div class="sig-container secure-bg">
             <div class="sig-row">
                 <div class="sig-cell">
-                    <span class="sig-title">Prepared By,</span>
+                    <span class="sig-title">Prepared By</span>
                     <div class="sig-body">
                         <div class="sig-qr-wrapper">
                             <img id="qrCodeImgPrepared" class="sig-qr-img" src="" alt="Digital Signature QR">
@@ -793,7 +834,7 @@
                     </div>
                 </div>
                 <div class="sig-cell">
-                    <span class="sig-title">Approved By,</span>
+                    <span class="sig-title">Approved By</span>
                     <div class="sig-body">
                         <div class="sig-qr-wrapper">
                             <img id="qrCodeImgApproved" class="sig-qr-img" alt="Approval QR" style="display:none;">
@@ -1431,6 +1472,52 @@
             return VALIDATION_BASE_URL + "?cek=" + encodeURIComponent("Memo|" + String(memoNo || "").trim());
         }
 
+        // ---------- Pas 1 lembar A4 ----------
+        // Ukuran area cetak = A4 dikurangi margin @page pada <style id="printStyles">.
+        const PRINT_CONTENT_W_MM = 180;   // 210mm - 15mm - 15mm
+        const PRINT_CONTENT_H_MM = 271;   // 297mm - 14mm - 12mm
+        const PRINT_MIN_SCALE = 0.6;      // batas terkecil supaya tulisan tetap terbaca
+
+        // Mengukur tinggi dokumen memakai gaya cetak (sementara), lalu mengecilkan (zoom)
+        // sampai muat satu lembar. Dokumen yang pendek tidak diubah (zoom = 1).
+        function fitPrintToOnePage() {
+            const area = document.getElementById('printArea');
+            const sheet = document.getElementById('printStyles');
+            if (!area || !sheet) return 1;
+
+            const mm = 96 / 25.4;
+            const maxH = PRINT_CONTENT_H_MM * mm - 14;   // cadangan supaya tidak loncat ke lembar ke-2
+            const prevMedia = sheet.media;
+            const prevBodyWidth = document.body.style.width;
+            const bodyHeight = () => document.body.getBoundingClientRect().height;
+
+            area.style.zoom = "";
+            sheet.media = "all";
+            document.body.style.width = (PRINT_CONTENT_W_MM * mm) + "px";
+
+            let scale = 1;
+            let h = bodyHeight();
+            if (h > maxH) {
+                scale = Math.max(PRINT_MIN_SCALE, Math.floor((maxH / h) * 100) / 100);
+                area.style.zoom = scale;
+                h = bodyHeight();
+                while (h > maxH && scale > PRINT_MIN_SCALE) {
+                    scale = Math.max(PRINT_MIN_SCALE, Math.round((scale - 0.01) * 100) / 100);
+                    area.style.zoom = scale;
+                    h = bodyHeight();
+                }
+            }
+
+            sheet.media = prevMedia;
+            document.body.style.width = prevBodyWidth;
+            return scale;
+        }
+
+        window.addEventListener('afterprint', () => {
+            const area = document.getElementById('printArea');
+            if (area) area.style.zoom = "";
+        });
+
         function loadQrImage(img, url) {
             return new Promise(resolve => {
                 img.onload = () => resolve(true);
@@ -1502,7 +1589,7 @@
                 for (let padIdx = 0; padIdx < dynamicFillerQuota; padIdx++) {
                     printTableContentBody.innerHTML += `
                         <tr>
-                            <td style="height: 26px;"></td>
+                            <td style="height: 22px;"></td>
                             <td></td>
                             <td></td>
                         </tr>
@@ -1555,8 +1642,17 @@
             const validationLink = (isReprintMode && currentValidationLink) ? currentValidationLink : buildValidationLink(cloudGeneratedMemoNo);
             qrJobs.push(loadQrImage(document.getElementById('qrCodeImgValidasi'), VALIDATION_QR_API_URL + encodeURIComponent(validationLink)));
 
-            // Cetak tepat 1x setelah semua QR selesai dimuat (berhasil atau gagal)
-            Promise.all(qrJobs).then(() => setTimeout(() => window.print(), 450));
+            // Gambar lampiran harus sudah ter-decode sebelum tinggi dokumen diukur
+            if (attachmentBase64Data) {
+                const attachImg = document.getElementById('targetImgRender');
+                if (attachImg && attachImg.decode) qrJobs.push(attachImg.decode().catch(() => null));
+            }
+
+            // Cetak tepat 1x setelah semua QR selesai dimuat (berhasil atau gagal), dipas ke 1 lembar
+            Promise.all(qrJobs).then(() => {
+                fitPrintToOnePage();
+                setTimeout(() => window.print(), 450);
+            });
         }
     </script>
 </body>
