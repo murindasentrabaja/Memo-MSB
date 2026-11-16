@@ -638,6 +638,17 @@
                             <button type="button" onclick="autoFillTulisText(true)" class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 whitespace-nowrap">Susun Ulang</button>
                         </div>
                         <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Jenis Keperluan Memo</label>
+                            <select id="selectKeperluan" onchange="autoFillTulisText(true)" class="w-full p-2 text-sm input-glass cursor-pointer">
+                                <option value="">Otomatis (sesuai perihal dan uraian)</option>
+                                <option value="absen">Lupa absen / koreksi kehadiran</option>
+                                <option value="req">Permintaan atau pengadaan</option>
+                                <option value="pinjam">Peminjaman material atau barang</option>
+                                <option value="info">Pemberitahuan / informasi</option>
+                                <option value="umum">Lainnya</option>
+                            </select>
+                        </div>
+                        <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">1. Kalimat Pembuka</label>
                             <textarea id="inputKalimatPembuka" rows="2" class="w-full p-2 text-sm input-glass leading-relaxed hover:border-blue-400" placeholder="Misal: Dengan hormat,..."></textarea>
                         </div>
@@ -1225,6 +1236,7 @@
             
             insertItemRow(); 
             handleJenisMemoChange();
+            $id('selectKeperluan').value = '';
             autoFillTulisText(true);
         }
 
@@ -2111,8 +2123,14 @@ const QrCode = (function () {
         function titleCase(s) {
             return String(s || "").toLowerCase().replace(/(^|[\s\-\/(])([a-z])/g, (m, a, b) => a + b.toUpperCase());
         }
+        // Jenis keperluan yang dikenali dari perihal / uraian memo (urutan = prioritas)
+        const CAT_RULES = [
+            ['absen', /lupa (absen|presensi|scan|finger)|tidak (absen|scan|finger)|koreksi (absen|presensi|kehadiran)|absensi|presensi|finger ?print/],
+            ['pinjam', /peminjaman|meminjam|pinjam/]
+        ];
         function memoCategory(t) {
             t = String(t || "").toLowerCase();
+            for (const [name, re] of CAT_RULES) if (re.test(t)) return name;
             const r = t.search(REQ_RE), i = t.search(INFO_RE);
             if (r < 0 && i < 0) return null;
             if (r < 0) return 'info';
@@ -2136,17 +2154,34 @@ const QrCode = (function () {
             const subj = subjLower(doc.subjek);
             const dari = String(doc.departemen || "").trim();
             const kpd = titleCase(doc.kepada || "");
-            const cat = tulis ? (memoCategory(subj) || memoCategory(doc.isiMemo) || 'umum') : 'req';
-            const kata = /^(pengajuan|permohonan|permintaan)/.test(subj) ? "menyampaikan " : "mengajukan ";
+            const cat = doc.kategori || (tulis ? (memoCategory(subj) || memoCategory(doc.isiMemo) || 'umum')
+                                               : (memoCategory(subj) === 'pinjam' ? 'pinjam' : 'req'));
             const lingkup = dari ? " di lingkungan " + dari : "";
+            const kata = /^(pengajuan|permohonan|permintaan)/.test(subj) ? "menyampaikan " : "mengajukan ";
             const SALAM = "Dengan hormat,\n\n";
             const TERIMA_KASIH = "Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih.";
+            const rincian = tulis ? "uraian" : "rincian";
+            const barang = tulis ? "" : itemPhrase(doc.items);
+
+            if (cat === 'absen') {
+                return {
+                    pembuka: SALAM + "Bersama ini kami sampaikan keterangan terkait " + (subj || "kehadiran karyawan") + ", sebagaimana uraian berikut:",
+                    penutup: "Demikian disampaikan agar data kehadiran yang bersangkutan dapat disesuaikan sebagaimana mestinya. " + TERIMA_KASIH
+                };
+            }
+            if (cat === 'pinjam') {
+                const inti = subj.replace(/^(meminjam|pinjam)\s+/, "");
+                const pinjam = !subj ? "peminjaman material" : (/peminjaman/.test(subj) ? subj : "peminjaman " + inti);
+                return {
+                    pembuka: SALAM + "Sehubungan dengan kebutuhan operasional" + lingkup + ", bersama ini kami " + kata + pinjam + barang + ", dengan " + rincian + " sebagai berikut:",
+                    penutup: "Demikian " + pinjam + " ini kami sampaikan. Barang yang dipinjam akan kami gunakan sesuai keperluan dan dikembalikan dalam kondisi baik setelah selesai digunakan. Mohon kiranya dapat disetujui" + (kpd ? " oleh " + kpd : "") + ". " + TERIMA_KASIH
+                };
+            }
             if (cat === 'req') {
                 const ajuan = !subj ? (tulis ? "permohonan" : "permohonan pengadaan barang")
                     : (REQ_RE.test(subj) ? subj : (tulis ? "permohonan mengenai " : "permohonan pengadaan ") + subj);
                 return {
-                    pembuka: SALAM + "Sehubungan dengan kebutuhan operasional" + lingkup + ", bersama ini kami " + kata + ajuan +
-                        (tulis ? "" : itemPhrase(doc.items)) + ", dengan " + (tulis ? "uraian" : "rincian") + " sebagai berikut:",
+                    pembuka: SALAM + "Sehubungan dengan kebutuhan operasional" + lingkup + ", bersama ini kami " + kata + ajuan + barang + ", dengan " + rincian + " sebagai berikut:",
                     penutup: "Demikian " + ajuan + " ini kami sampaikan. Mohon kiranya dapat disetujui dan ditindaklanjuti" +
                         (kpd ? " oleh " + kpd : "") + " sebagaimana mestinya. " + TERIMA_KASIH
                 };
@@ -2170,7 +2205,7 @@ const QrCode = (function () {
             if (!force && $id('selectJenisMemo').value !== 'tulis') return;
             const sel = $id('selectKepada').value;
             const t = composeMemoText({
-                jenis: 'tulis', subjek: $id('inputSubjek').value, isiMemo: $id('inputIsiMemo').value,
+                jenis: 'tulis', kategori: $id('selectKeperluan').value, subjek: $id('inputSubjek').value, isiMemo: $id('inputIsiMemo').value,
                 kepada: sel === 'LAINNYA' ? $id('inputKepada').value : sel, departemen: $id('selectDeptPengirim').value, items: []
             });
             [['inputKalimatPembuka', t.pembuka], ['inputKalimatPenutup', t.penutup]].forEach(([id, v]) => {
