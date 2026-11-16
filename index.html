@@ -543,7 +543,7 @@
                     <span class="text-purple-600 text-lg">🖨️</span>
                     <h3 class="text-sm font-bold text-purple-700 uppercase tracking-wider">Pilih Riwayat Memo untuk Dicetak Ulang</h3>
                 </div>
-                <p class="text-xs text-gray-600 mb-4">Pilih nomor memo dari database System MEMO. Semua rincian (Kepada, Subjek, Item Barang) akan ditarik otomatis dari cloud.</p>
+                <p class="text-xs text-gray-600 mb-4">Pilih nomor memo yang ingin dibuka. Seluruh rincian akan tampil sesuai dokumen yang telah diterbitkan.</p>
                 
                 <div>
                     <select id="dropdownReprintMemo" onchange="handleReprintSelection()" class="w-full p-3 rounded-lg input-glass border-purple-200 focus:border-purple-500 font-semibold text-sm shadow-sm cursor-pointer hover:border-purple-400 transition-all">
@@ -633,6 +633,10 @@
                     </div>
 
                     <div id="containerMemoTulis" class="hidden flex-col gap-4 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="text-[11px] text-gray-500">Kalimat pembuka dan penutup disusun mengikuti perihal dan uraian memo. Anda tetap dapat menyesuaikannya.</span>
+                            <button type="button" onclick="autoFillTulisText(true)" class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 whitespace-nowrap">Susun Ulang</button>
+                        </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">1. Kalimat Pembuka</label>
                             <textarea id="inputKalimatPembuka" rows="2" class="w-full p-2 text-sm input-glass leading-relaxed hover:border-blue-400" placeholder="Misal: Dengan hormat,..."></textarea>
@@ -651,14 +655,14 @@
 
             <div class="mt-8 pt-5 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div id="statusProsedurContainer" class="text-xs text-gray-600 bg-blue-50 p-3 rounded-xl border border-blue-100 max-w-md w-full shadow-inner">
-                    <span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>
-                    1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>
-                    2. Sistem akan mengunci data dan menampilkan <strong class="text-amber-600">Dokumen Live</strong> yang otomatis berubah saat di-approve.
+                    <span class="text-blue-600 font-bold">💡 Alur Penerbitan Memo:</span><br>
+                    1. Lengkapi data memo, lalu klik <strong class="text-emerald-600">Simpan</strong> untuk menerbitkan nomor memo.<br>
+                    2. Dokumen tampil di bawah dan diperbarui otomatis setelah disetujui.
                 </div>
                 
                 <div class="flex gap-3 w-full sm:w-auto justify-end flex-wrap">
                     <button id="actionBtnSave" onclick="triggerSaveWithAnimation()" class="w-full sm:w-auto px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-bold text-sm transition-all duration-300 shadow-lg shadow-emerald-500/30 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
-                        <span>💾</span> 1. Simpan ke System Memo
+                        <span>💾</span> 1. Simpan Memo
                     </button>
                     <button id="actionBtnPrint" onclick="triggerPrintWithAnimation()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-sm transition-all duration-300 opacity-50 cursor-not-allowed shadow-lg shadow-amber-500/30 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2" disabled>
                         <span>🖨️</span> 2. Cetak / Bagikan PDF
@@ -763,8 +767,7 @@
 
         <div id="printBodyPengadaan">
             <div style="margin-top: 15px; text-align: left;">
-                <p>Dengan hormat,</p>
-                <p>Bersama dengan memorandum ini, kami sampaikan permohonan pengadaan barang/material operasional guna mendukung kelancaran aktivitas kerja di lingkungan PT Murinda Sentra Baja Plant Kalijati, dengan rincian spesifikasi dan volume kebutuhan sebagai berikut:</p>
+                <p id="targetPengadaanPembuka" style="white-space: pre-line;"></p>
             </div>
 
             <table class="items-table">
@@ -780,7 +783,7 @@
             </table>
 
             <div style="margin-top: 12px;">
-                <p>Demikian memorandum ini kami ajukan. Atas perhatian, dukungan, dan tindak lanjut segera dari bagian terkait, kami sampaikan terima kasih.</p>
+                <p id="targetPengadaanPenutup"></p>
             </div>
         </div>
 
@@ -884,10 +887,10 @@
 
     <div id="choiceModal" class="hidden"><div class="choice-card">
         <div style="font-weight:800;font-size:15px;color:#0f172a">Cetak / Bagikan Memo</div>
-        <div style="font-size:11px;color:#64748b;margin-top:2px">Nama file otomatis: <b id="choiceFileName"></b></div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">Nama berkas: <b id="choiceFileName"></b></div>
         <button type="button" id="choiceWa" class="choice-btn wa" onclick="shareToWhatsApp()" disabled>💬 Bagikan ke WhatsApp (PDF)<small id="choiceWaHint"></small></button>
-        <button type="button" id="choiceDownload" class="choice-btn" onclick="downloadPdf()">⬇️ Unduh PDF<small>Nama file otomatis, 1 halaman A4</small></button>
-        <button type="button" class="choice-btn" onclick="choosePrint()">🖨️ Cetak / Simpan sebagai PDF<small>Dialog cetak browser, A4 pas 1 halaman</small></button>
+        <button type="button" id="choiceDownload" class="choice-btn" onclick="downloadPdf()">⬇️ Unduh PDF<small>Simpan berkas PDF ke perangkat Anda</small></button>
+        <button type="button" class="choice-btn" onclick="choosePrint()">🖨️ Cetak / Simpan sebagai PDF<small>Kirim ke printer atau simpan sebagai PDF</small></button>
         <div id="choiceError" class="hidden" style="color:#b91c1c;font-size:11px;margin-top:10px"></div>
         <button type="button" class="choice-btn" style="text-align:center" onclick="closePrintChoice()">Batal</button>
     </div></div>
@@ -947,7 +950,7 @@
         }
 
         function triggerSaveWithAnimation() {
-            playTruckAnimation("MENGIRIM DATA MEMO KE CLOUD...", () => {
+            playTruckAnimation("MENYIMPAN MEMO...", () => {
                 saveDataToCloud();
             });
         }
@@ -1005,11 +1008,11 @@
             .then(r => r.json())
             .then(res => {
                 if (res && !Array.isArray(res) && res.status === "error") {
-                    showError("Master departemen: " + (res.message || "terjadi kesalahan di server."));
+                    showError(cleanMsg(res.message, "Daftar departemen belum dapat dimuat."));
                     return;
                 }
                 if (!res || Array.isArray(res) || res.status !== "success" || !Array.isArray(res.departemen)) {
-                    showError("Respons server tidak dikenali. Pastikan Code.gs versi terbaru sudah di-deploy (Deploy > Manage deployments > Edit > New version).");
+                    showError("Data belum dapat dimuat. Silakan hubungi administrator sistem.");
                     return;
                 }
                 deptMasterList = res.departemen.filter(d => d && d.nama);
@@ -1018,7 +1021,7 @@
             })
             .catch(err => {
                 console.error("Gagal memuat master departemen:", err);
-                showError("Gagal terhubung ke server.");
+                showError("Tidak dapat terhubung ke sistem. Periksa koneksi internet Anda.");
             });
         }
 
@@ -1062,7 +1065,7 @@
             const status = document.getElementById('loginUsersStatus');
             sel.innerHTML = '<option value="" disabled selected>⏳ Memuat daftar personel...</option>';
             status.className = "text-[11px] mt-1 font-semibold text-amber-600";
-            status.textContent = "Mengambil daftar personel dari sheet Login...";
+            status.textContent = "Memuat daftar pengguna...";
 
             const showError = (msg) => {
                 loginUserList = [];
@@ -1081,11 +1084,11 @@
             .then(r => r.json())
             .then(res => {
                 if (res && !Array.isArray(res) && res.status === "error") {
-                    showError(res.message || "Terjadi kesalahan di server.");
+                    showError(cleanMsg(res.message, "Daftar pengguna belum dapat dimuat."));
                     return;
                 }
                 if (!res || Array.isArray(res) || res.status !== "success" || !Array.isArray(res.users)) {
-                    showError("Respons server tidak dikenali. Pastikan Code.gs versi terbaru sudah di-deploy (Deploy > Manage deployments > Edit > New version).");
+                    showError("Data belum dapat dimuat. Silakan hubungi administrator sistem.");
                     return;
                 }
                 loginUserList = res.users.filter(u => u && u.nama);
@@ -1100,7 +1103,7 @@
             })
             .catch(err => {
                 console.error("Gagal memuat daftar personel:", err);
-                showError("Gagal terhubung ke server.");
+                showError("Tidak dapat terhubung ke sistem. Periksa koneksi internet Anda.");
             });
         }
 
@@ -1134,7 +1137,7 @@
             .then(r => r.json())
             .then(res => {
                 if (!res || res.status !== "success" || !res.token || !res.user) {
-                    setError((res && res.message) || "Login gagal. Periksa kembali nama dan password (NIK).");
+                    setError(cleanMsg(res && res.message, "Login gagal. Periksa kembali nama dan password (NIK)."));
                     return;
                 }
 
@@ -1156,12 +1159,18 @@
             })
             .catch(err => {
                 console.error("Gagal login:", err);
-                setError("Gagal terhubung ke server. Periksa koneksi atau URL Apps Script.");
+                setError("Tidak dapat terhubung ke sistem. Periksa koneksi internet Anda.");
             })
             .finally(() => {
                 btnLogin.disabled = false;
                 btnLogin.textContent = "Masuk ke Sistem";
             });
+        }
+
+        function cleanMsg(m, fallback) {
+            m = String(m == null ? "" : m).trim();
+            if (!m || /sheet|spreadsheet|importrange|master_|apps script|code\.gs|failed to fetch|networkerror|load failed|http \d{3}|unexpected token|json/i.test(m)) return fallback || "Terjadi kendala pada sistem. Silakan coba kembali.";
+            return m;
         }
 
         function handleSessionExpired(message) {
@@ -1216,6 +1225,7 @@
             
             insertItemRow(); 
             handleJenisMemoChange();
+            autoFillTulisText(true);
         }
 
         function loadHistoryDropdown() {
@@ -1223,7 +1233,7 @@
             
             dropdown.innerHTML = '<option value="" disabled selected>⏳ Menghubungkan ke System MEMO...</option>';
             document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-amber-500 font-bold animate-pulse";
-            document.getElementById('cloudStatusOutput').innerText = "Mengambil database riwayat dari cloud...";
+            document.getElementById('cloudStatusOutput').innerText = "Memuat riwayat memo...";
             
             fetch(APPS_SCRIPT_WEBAPP_URL)
             .then(response => response.json())
@@ -1231,14 +1241,14 @@
                 document.getElementById('cloudStatusOutput').innerText = ""; 
                 
                 if (history.status === "error") {
-                    throw new Error(history.message);
+                    throw new Error(cleanMsg(history.message));
                 }
                 
                 serverMemoHistory = history; 
-                dropdown.innerHTML = '<option value="" disabled selected>-- Pilih Data Memo dari Spreadsheet --</option>';
+                dropdown.innerHTML = '<option value="" disabled selected>-- Pilih Nomor Memo --</option>';
                 
                 if (history.length === 0) {
-                    dropdown.innerHTML += '<option value="" disabled>Belum ada riwayat memo di database.</option>';
+                    dropdown.innerHTML += '<option value="" disabled>Belum ada memo yang tersimpan.</option>';
                     return;
                 }
 
@@ -1250,7 +1260,7 @@
                 console.error("Gagal memuat riwayat:", error);
                 dropdown.innerHTML = '<option value="" disabled selected>❌ Gagal mengambil data jaringan.</option>';
                 document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-red-500 font-bold";
-                document.getElementById('cloudStatusOutput').innerText = "Gagal terhubung ke Google System MEMO. Periksa script url atau jaringan Anda.";
+                document.getElementById('cloudStatusOutput').innerText = "Riwayat memo belum dapat dimuat. Periksa koneksi internet Anda, lalu coba kembali.";
             });
         }
 
@@ -1321,7 +1331,7 @@
                 btnPrint.classList.remove('opacity-50', 'cursor-not-allowed');
                 
                 document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-purple-600 font-bold";
-                document.getElementById('cloudStatusOutput').innerText = "✔ Data System MEMO berhasil dimuat lengkap dan siap dicetak!";
+                document.getElementById('cloudStatusOutput').innerText = "✔ Memo berhasil dimuat dan siap dicetak.";
                 liveDoc = docFromHistory(memo);
                 showLiveDoc(true);
             }
@@ -1355,7 +1365,7 @@
                 btnPrint.classList.add('w-full', 'bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'hover:from-purple-500', 'hover:to-blue-500');
                 btnPrint.innerHTML = "<span>🖨️</span> Cetak / Unduh Dokumen (Mode Reprint)";
                 
-                statusContainer.innerHTML = `<span class="text-purple-600 font-bold">💡 Mode Cetak Ulang Aktif:</span><br>Pilih riwayat dari dropdown. Data riwayat ini diambil dan ditarik secara otomatis dari System MEMO(Cloud).`;
+                statusContainer.innerHTML = `<span class="text-purple-600 font-bold">💡 Mode Cetak Ulang Aktif:</span><br>Pilih nomor memo pada daftar di atas. Seluruh data akan tampil sesuai dokumen yang telah diterbitkan.`;
                 document.getElementById('cloudStatusOutput').innerText = "";
 
                 resetAppToBlank();
@@ -1379,7 +1389,7 @@
                 btnPrint.classList.remove('w-full', 'bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'hover:from-purple-500', 'hover:to-blue-500');
                 btnPrint.innerHTML = "<span>🖨️</span> 2. Cetak / Bagikan PDF";
                 
-                statusContainer.innerHTML = `<span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>2. Sistem akan mengunci data dan menampilkan <strong class="text-amber-600">Dokumen Live</strong> yang otomatis berubah saat di-approve.`;
+                statusContainer.innerHTML = `<span class="text-blue-600 font-bold">💡 Alur Penerbitan Memo:</span><br>1. Lengkapi data memo, lalu klik <strong class="text-emerald-600">Simpan</strong> untuk menerbitkan nomor memo.<br>2. Dokumen tampil di bawah dan diperbarui otomatis setelah disetujui.`;
                 
                 cloudGeneratedMemoNo = "";
                 cloudGeneratedDateString = "";
@@ -1462,7 +1472,7 @@
 
         function saveDataToCloud() {
             if (!APPS_SCRIPT_WEBAPP_URL || APPS_SCRIPT_WEBAPP_URL.includes("SILAHKAN_PASTE_URL")) {
-                alert("Gagal Memproses: Konfigurasi URL Google Apps Script belum disematkan pada kode HTML induk.");
+                alert("Memo belum dapat disimpan. Silakan hubungi administrator sistem.");
                 return;
             }
 
@@ -1537,7 +1547,7 @@
             btnSave.innerHTML = "<span>⏳</span> Menyimpan Data...";
             btnSave.disabled = true;
             statusIndicator.className = "text-xs text-right mt-3 text-amber-500 font-bold animate-pulse";
-            statusIndicator.innerText = "Mengirim data enkripsi menuju cloud MSB ERP...";
+            statusIndicator.innerText = "Menyimpan memo...";
 
             fetch(APPS_SCRIPT_WEBAPP_URL, {
                 method: 'POST',
@@ -1554,7 +1564,7 @@
                     cloudGeneratedDateString = serverResultJson.date;
 
                     statusIndicator.className = "text-xs text-right mt-3 text-emerald-600 font-bold";
-                    statusIndicator.innerHTML = `✔ Berhasil Tersimpan! Nomor Terbit Otomatis: ${cloudGeneratedMemoNo}`;
+                    statusIndicator.innerHTML = `✔ Memo tersimpan dengan nomor ${cloudGeneratedMemoNo}`;
                     liveDoc = docFromSavedMemo(transactionPayload, serverResultJson);
                     showLiveDoc(true);
                     
@@ -1564,17 +1574,17 @@
                 } else if (serverResultJson.code === 'SESSION_EXPIRED') {
                     handleSessionExpired(serverResultJson.message);
                 } else {
-                    throw new Error(serverResultJson.message || "Unknown Apps Script runtime anomaly.");
+                    throw new Error(cleanMsg(serverResultJson.message, "Data belum dapat diproses."));
                 }
             })
             .catch(networkError => {
                 console.error(networkError);
                 statusIndicator.className = "text-xs text-right mt-3 text-red-500 font-bold";
-                statusIndicator.innerText = `❌ Gangguan Sistem: ${networkError.message}. Periksa URL atau koneksi jaringan Anda.`;
-                alert(`Gagal menyimpan data ke cloud server: ${networkError.message}`);
+                statusIndicator.innerText = `❌ Memo belum dapat disimpan. ${cleanMsg(networkError.message, "Periksa koneksi internet Anda, lalu coba kembali.")}`;
+                alert(`Memo belum dapat disimpan. ${cleanMsg(networkError.message, "Periksa koneksi internet Anda, lalu coba kembali.")}`);
             })
             .finally(() => {
-                btnSave.innerHTML = "<span>💾</span> 1. Simpan ke System Memo";
+                btnSave.innerHTML = "<span>💾</span> 1. Simpan Memo";
                 btnSave.disabled = false;
             });
         }
@@ -2083,6 +2093,96 @@ const QrCode = (function () {
             img.style.maxHeight = "none";
         }
 
+        // ==========================================================
+        // KALIMAT PEMBUKA & PENUTUP: disusun dari perihal, tujuan, dan uraian memo
+        // ==========================================================
+        const REQ_RE = /permohonan|pengajuan|permintaan|pengadaan|pembelian|perbaikan|penggantian|perpanjangan|peminjaman|reimburse|klaim/;
+        const INFO_RE = /pemberitahuan|informasi|pengumuman|laporan|undangan|penugasan|klarifikasi|perubahan|jadwal|imbauan|himbauan|edaran|penyesuaian|evaluasi/;
+        const normText = (s) => String(s || "").toLowerCase().replace(/[\s.,…]+/g, " ").trim();
+        const GENERIC_TEXTS = ["", "dengan hormat", "dengan hormat bersama dengan memorandum ini",
+            "demikian memorandum ini kami ajukan", "demikian penyampaian kami atas perhatian dan kerjasamanya kami ucapkan terima kasih"];
+        const isGenericText = (s) => GENERIC_TEXTS.indexOf(normText(s)) > -1;
+
+        function subjLower(s) {
+            s = String(s || "").replace(/^\s*(perihal|subject)\s*:\s*/i, "").replace(/\s+/g, " ").trim().replace(/[.\s]+$/, "");
+            return s.split(" ").map(w => (/^[A-Z0-9&\/()\-]{2,}$/.test(w) ? w : w.toLowerCase())).join(" ")
+                .replace(/\b(januari|februari|maret|april|mei|juni|juli|agustus|september|oktober|november|desember|senin|selasa|rabu|kamis|jumat|sabtu)\b/g, m => m.charAt(0).toUpperCase() + m.slice(1));
+        }
+        function titleCase(s) {
+            return String(s || "").toLowerCase().replace(/(^|[\s\-\/(])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+        }
+        function memoCategory(t) {
+            t = String(t || "").toLowerCase();
+            const r = t.search(REQ_RE), i = t.search(INFO_RE);
+            if (r < 0 && i < 0) return null;
+            if (r < 0) return 'info';
+            if (i < 0) return 'req';
+            return r <= i ? 'req' : 'info';
+        }
+        function itemPhrase(items) {
+            const names = (items || []).map(i => String(i.deskripsi == null ? "" : i.deskripsi).trim()).filter(Boolean)
+                .map(n => n.replace(/^([A-Z])([a-z])/, (m, a, b) => a.toLowerCase() + b));
+            if (!names.length) return "";
+            const head = names.slice(0, 3);
+            if (head.every(n => n.length <= 40)) {
+                let t = head.length > 1 ? head.slice(0, -1).join(", ") + " dan " + head[head.length - 1] : head[0];
+                if (names.length > 3) t = head.join(", ") + ", dan " + (names.length - 3) + " item lainnya";
+                return " berupa " + t;
+            }
+            return " sebanyak " + names.length + " jenis barang/material";
+        }
+        function composeMemoText(doc) {
+            const tulis = doc.jenis === 'tulis';
+            const subj = subjLower(doc.subjek);
+            const dari = String(doc.departemen || "").trim();
+            const kpd = titleCase(doc.kepada || "");
+            const cat = tulis ? (memoCategory(subj) || memoCategory(doc.isiMemo) || 'umum') : 'req';
+            const kata = /^(pengajuan|permohonan|permintaan)/.test(subj) ? "menyampaikan " : "mengajukan ";
+            const lingkup = dari ? " di lingkungan " + dari : "";
+            const SALAM = "Dengan hormat,\n\n";
+            const TERIMA_KASIH = "Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih.";
+            if (cat === 'req') {
+                const ajuan = !subj ? (tulis ? "permohonan" : "permohonan pengadaan barang")
+                    : (REQ_RE.test(subj) ? subj : (tulis ? "permohonan mengenai " : "permohonan pengadaan ") + subj);
+                return {
+                    pembuka: SALAM + "Sehubungan dengan kebutuhan operasional" + lingkup + ", bersama ini kami " + kata + ajuan +
+                        (tulis ? "" : itemPhrase(doc.items)) + ", dengan " + (tulis ? "uraian" : "rincian") + " sebagai berikut:",
+                    penutup: "Demikian " + ajuan + " ini kami sampaikan. Mohon kiranya dapat disetujui dan ditindaklanjuti" +
+                        (kpd ? " oleh " + kpd : "") + " sebagaimana mestinya. " + TERIMA_KASIH
+                };
+            }
+            if (cat === 'info') {
+                const info = !subj ? "informasi berikut" : (INFO_RE.test(subj) ? subj : "informasi mengenai " + subj);
+                return {
+                    pembuka: SALAM + "Bersama ini kami sampaikan " + info + ", dengan uraian sebagai berikut:",
+                    penutup: "Demikian " + info + " ini kami sampaikan. " + TERIMA_KASIH
+                };
+            }
+            return {
+                pembuka: SALAM + (subj ? "Sehubungan dengan " + subj + ", bersama ini kami sampaikan" : "Bersama ini kami sampaikan") + " uraian sebagai berikut:",
+                penutup: "Demikian disampaikan" + (subj ? " mengenai " + subj : "") + ". " + TERIMA_KASIH
+            };
+        }
+
+        // Form Memo Tulis: isian pembuka/penutup mengikuti perihal dan uraian selama belum diubah manual
+        function autoFillTulisText(force) {
+            if (isReprintMode) return;
+            if (!force && $id('selectJenisMemo').value !== 'tulis') return;
+            const sel = $id('selectKepada').value;
+            const t = composeMemoText({
+                jenis: 'tulis', subjek: $id('inputSubjek').value, isiMemo: $id('inputIsiMemo').value,
+                kepada: sel === 'LAINNYA' ? $id('inputKepada').value : sel, departemen: $id('selectDeptPengirim').value, items: []
+            });
+            [['inputKalimatPembuka', t.pembuka], ['inputKalimatPenutup', t.penutup]].forEach(([id, v]) => {
+                const el = $id(id);
+                if (force) delete el.dataset.manual;
+                if (!el.dataset.manual) el.value = v;
+            });
+        }
+        ['inputSubjek', 'inputIsiMemo', 'inputKepada'].forEach(id => $id(id).addEventListener('input', () => autoFillTulisText()));
+        ['selectDeptPengirim', 'selectKepada', 'selectJenisMemo'].forEach(id => $id(id).addEventListener('change', () => autoFillTulisText()));
+        ['inputKalimatPembuka', 'inputKalimatPenutup'].forEach(id => $id(id).addEventListener('input', e => { if (e.isTrusted) e.target.dataset.manual = '1'; }));
+
         function renderLiveDoc() {
             const doc = liveDoc;
             if (!doc) return Promise.resolve();
@@ -2116,13 +2216,17 @@ const QrCode = (function () {
             if (doc.jenis === 'tulis') {
                 $id('printBodyPengadaan').style.display = 'none';
                 $id('printBodyTulis').style.display = 'block';
-                setText('targetKalimatPembuka', doc.kalimatPembuka || "");
+                const ct = composeMemoText(doc);
+                setText('targetKalimatPembuka', isGenericText(doc.kalimatPembuka) ? ct.pembuka : doc.kalimatPembuka);
                 setText('targetIsiMemo', doc.isiMemo || "");
-                setText('targetKalimatPenutup', doc.kalimatPenutup || "");
+                setText('targetKalimatPenutup', isGenericText(doc.kalimatPenutup) ? ct.penutup : doc.kalimatPenutup);
                 itemCount = 1;
             } else {
                 $id('printBodyPengadaan').style.display = 'block';
                 $id('printBodyTulis').style.display = 'none';
+                const cp = composeMemoText(doc);
+                setText('targetPengadaanPembuka', cp.pembuka);
+                setText('targetPengadaanPenutup', cp.penutup);
                 const tbody = $id('targetTableItemsBody');
                 tbody.textContent = "";
                 const addCell = (tr, cls, text) => {
@@ -2286,10 +2390,10 @@ const QrCode = (function () {
             if (st === 'approved') {
                 cls = 'approved'; icon = '✅';
                 title = 'Disetujui oleh ' + (a.nama || '-');
-                sub = a.tanggal || 'Dokumen sudah memuat tanda tangan digital approval.';
+                sub = a.tanggal || 'Tanda tangan digital telah tercantum pada dokumen.';
             } else if (st === 'approved_nottd') {
                 icon = '✍️';
-                title = 'Disetujui oleh ' + (a.nama || '-') + ', menunggu tanda tangan digital';
+                title = 'Disetujui oleh ' + (a.nama || '-') + ', tanda tangan digital sedang diproses';
             } else if (st === 'rejected') {
                 cls = 'rejected'; icon = '❌';
                 title = 'Ditolak' + (a.nama ? ' oleh ' + a.nama : '');
@@ -2298,12 +2402,12 @@ const QrCode = (function () {
 
             if (sub === null) {
                 if (livePoll.stopped) {
-                    sub = 'Pemantauan otomatis berhenti. Klik "Cek Approval" untuk memeriksa lagi.';
+                    sub = 'Pembaruan otomatis dihentikan. Klik "Cek Approval" untuk memeriksa kembali.';
                 } else if (livePoll.inFlight) {
-                    sub = 'Memeriksa status approval...';
+                    sub = 'Memeriksa status persetujuan...';
                 } else {
-                    sub = 'Dicek otomatis tiap ' + Math.round(pollInterval() / 1000) + ' detik, dokumen akan langsung berubah begitu di-approve.';
-                    if (livePoll.lastCheck) sub += ' Terakhir: ' + livePoll.lastCheck.toLocaleTimeString('id-ID');
+                    sub = 'Dokumen akan diperbarui otomatis setelah disetujui.';
+                    if (livePoll.lastCheck) sub += ' Terakhir diperiksa ' + livePoll.lastCheck.toLocaleTimeString('id-ID');
                 }
             }
 
@@ -2320,11 +2424,11 @@ const QrCode = (function () {
             body.appendChild(t); body.appendChild(s);
             if (livePoll.error) {
                 const e = document.createElement('div'); e.className = 'lb-sub'; e.style.color = '#b45309';
-                e.textContent = '⚠️ ' + livePoll.error + ' (akan dicoba lagi)';
+                e.textContent = 'Koneksi sedang terganggu. Sistem akan mencoba kembali secara otomatis.';
                 body.appendChild(e);
             }
             const chip = document.createElement('div'); chip.className = 'lb-chip';
-            chip.textContent = fitInfo.overflow ? '⚠️ Isi terlalu panjang' : ('A4 · 1 halaman · skala ' + Math.round(fitInfo.scale * 100) + '%');
+            chip.textContent = fitInfo.overflow ? 'Isi terlalu panjang' : (fitInfo.scale < 1 ? 'A4 · skala ' + Math.round(fitInfo.scale * 100) + '%' : 'Ukuran A4');
             bar.appendChild(ic); bar.appendChild(body); bar.appendChild(chip);
         }
 
@@ -2401,9 +2505,9 @@ const QrCode = (function () {
                 livePoll.lastCheck = new Date();
                 if (memo) {
                     applyServerMemo(memo);
-                    if (manual && !isFinalState(liveDoc)) toast('Belum ada approval untuk ' + doc.memoNo + '.');
+                    if (manual && !isFinalState(liveDoc)) toast('Memo ' + doc.memoNo + ' belum disetujui.');
                 } else if (manual) {
-                    toast('Memo ' + doc.memoNo + ' belum ditemukan di server.', 'err');
+                    toast('Memo ' + doc.memoNo + ' belum ditemukan.', 'err');
                 }
             } catch (err) {
                 if (doc === liveDoc) livePoll.error = err.message || "gagal terhubung";
@@ -2441,7 +2545,7 @@ const QrCode = (function () {
             if (nowState !== prevState) {
                 if (nowState === 'approved') {
                     livePoll.flashUntil = Date.now() + 4000;
-                    toast('✅ ' + doc.memoNo + ' disetujui oleh ' + (doc.approval.nama || '-') + '. Dokumen sudah diperbarui.', 'ok', 6000);
+                    toast('✅ ' + doc.memoNo + ' disetujui oleh ' + (doc.approval.nama || '-') + '.', 'ok', 6000);
                     setTimeout(updateLiveBar, 4100);
                 } else if (nowState === 'rejected') {
                     toast('❌ ' + doc.memoNo + ' ditolak' + (doc.approval.nama ? ' oleh ' + doc.approval.nama : '') + '.', 'err', 6000);
@@ -2510,14 +2614,14 @@ const QrCode = (function () {
                 wa.disabled = true;
                 const sp = document.createElement('span'); sp.className = 'spinner';
                 hint.appendChild(sp);
-                hint.appendChild(document.createTextNode('Menyiapkan PDF...'));
+                hint.appendChild(document.createTextNode('Menyiapkan berkas PDF...'));
             } else if (state === 'ready') {
                 wa.disabled = false;
                 hint.textContent = message;
             } else {
                 wa.disabled = false;
-                hint.textContent = 'PDF gagal disiapkan. Ketuk untuk mencoba lagi.';
-                err.textContent = message + ' Anda tetap bisa memakai opsi "Cetak / Simpan sebagai PDF".';
+                hint.textContent = 'Berkas PDF belum siap. Ketuk untuk mencoba lagi.';
+                err.textContent = message + ' Anda tetap dapat memilih "Cetak / Simpan sebagai PDF".';
                 err.classList.remove('hidden');
             }
         }
@@ -2555,7 +2659,7 @@ const QrCode = (function () {
                 if (!libPromises[name]) {
                     libPromises[name] = loadScriptFrom(lib).catch(() => {
                         libPromises[name] = null;
-                        throw new Error("Pustaka PDF tidak bisa dimuat (periksa koneksi internet).");
+                        throw new Error("Komponen PDF belum dapat dimuat. Periksa koneksi internet Anda.");
                     });
                 }
                 return libPromises[name];
@@ -2612,7 +2716,7 @@ const QrCode = (function () {
 
             let imgData;
             try { imgData = canvas.toDataURL('image/jpeg', 0.94); }
-            catch (err) { throw new Error("Gambar dokumen diblokir browser (logo dari domain lain?)."); }
+            catch (err) { throw new Error("Dokumen belum dapat dikonversi ke PDF."); }
 
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
@@ -2655,10 +2759,10 @@ const QrCode = (function () {
                 if (!choiceOpen || ver !== renderVersion) return;
                 const canShare = !!(navigator.canShare && navigator.share && navigator.canShare({ files: [file] }));
                 setChoiceState('ready', canShare
-                    ? 'Pilih WhatsApp di menu bagikan, PDF langsung terlampir.'
-                    : 'PDF diunduh lalu WhatsApp dibuka, tinggal lampirkan file ke chat.');
+                    ? 'Pilih WhatsApp pada menu yang tampil, berkas PDF otomatis terlampir.'
+                    : 'Berkas PDF akan diunduh, lalu WhatsApp terbuka untuk Anda lampirkan.');
             }).catch(err => {
-                if (choiceOpen && ver === renderVersion) setChoiceState('error', err.message || "Terjadi kesalahan.");
+                if (choiceOpen && ver === renderVersion) setChoiceState('error', cleanMsg(err.message, "Terjadi kendala. Silakan coba kembali."));
             });
         }
 
@@ -2711,7 +2815,7 @@ const QrCode = (function () {
         function whatsappFallback(file, text) {
             downloadFile(file);
             window.open('https://wa.me/?text=' + encodeURIComponent(text + '\n\n📎 Lampiran: ' + file.name), '_blank', 'noopener');
-            toast('PDF ' + file.name + ' diunduh. Lampirkan file itu ke chat WhatsApp yang terbuka.', 'ok', 7000);
+            toast('Berkas telah diunduh. Silakan lampirkan ke percakapan WhatsApp.', 'ok', 7000);
             closePrintChoice();
         }
 
@@ -2722,10 +2826,10 @@ const QrCode = (function () {
             try {
                 const file = await ensurePdf();
                 downloadFile(file);
-                toast('PDF diunduh: ' + file.name, 'ok');
+                toast('Berkas tersimpan: ' + file.name, 'ok');
                 closePrintChoice();
             } catch (err) {
-                setChoiceState('error', err.message || "Terjadi kesalahan.");
+                setChoiceState('error', cleanMsg(err.message, "Terjadi kendala. Silakan coba kembali."));
             } finally {
                 btn.disabled = false;
             }
