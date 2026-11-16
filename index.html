@@ -56,9 +56,6 @@
                 background: #ffffff;
                 color: #1e293b;
             }
-            #printArea {
-                display: none;
-            }
             .text-gradient {
                 background: linear-gradient(135deg, #2563eb, #7c3aed, #db2777);
                 -webkit-background-clip: text;
@@ -113,54 +110,17 @@
            PRINT STYLING (Official Corporate Document Standard)
            ========================================================================= */
     </style>
-    <style id="printStyles" media="print">
-            /* ==========================================================
-               DOKUMEN MEMO: palet mengikuti logo MSB (biru #0a4194, merah #c1272d)
-               ========================================================== */
-            @page {
-                size: A4;
-                margin: 14mm 15mm 12mm 15mm;
-            }
-            html, body {
-                height: auto !important;
-                min-height: 0 !important;
-                overflow: visible !important;
-            }
-            body {
-                display: block !important;
-                background: #fff !important;
-                color: #0f172a !important;
-                font-family: 'Inter', Arial, Helvetica, sans-serif !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                font-size: 9.5pt;
-                line-height: 1.5;
-                position: relative;
-
-                -webkit-touch-callout: none;
-                -webkit-user-select: none;
-                -khtml-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-            #appArea, #loginArea, .screen-element, #animationOverlay {
-                display: none !important;
-            }
-            #printArea {
-                display: block !important;
-                width: 100%;
-                position: relative;
-                z-index: 1;
-            }
-            #printArea, #printArea * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            #printArea p { margin: 0 0 7px 0; }
-
-            /* ---------- Kop surat ---------- */
-            .kop-container {
+    <style id="docStyles">
+#printArea{position:relative;width:210mm;height:296mm;padding:14mm 15mm 12mm 15mm;overflow:hidden;background:#fff;color:#0f172a;
+ font-family:'Inter',Arial,Helvetica,sans-serif;font-size:9.5pt;line-height:1.5;text-align:left;box-shadow:0 8px 30px rgba(15,23,42,.18);
+ -webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printArea,#printArea *,#printArea *::before,#printArea *::after{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+#printArea img{display:block;max-width:100%;height:auto}
+#printArea p{margin:0 0 7px 0}
+#docFit{transform-origin:0 0;width:180mm}
+#printArea table{border-collapse:collapse}
+/* ---------- Kop surat ---------- */
+            #printArea .kop-container {
                 display: flex !important;
                 justify-content: space-between !important;
                 align-items: center !important;
@@ -170,7 +130,7 @@
                 margin-bottom: 12px !important;
                 width: 100% !important;
             }
-            .kop-container::after {
+            #printArea .kop-container::after {
                 content: "";
                 position: absolute;
                 left: 0;
@@ -180,44 +140,44 @@
                 border-radius: 2px;
                 background: linear-gradient(90deg, #c1272d 0, #c1272d 46px, #0a4194 46px, #0a4194 100%);
             }
-            .kop-left { flex: 0 0 auto !important; }
-            .kop-logo {
+            #printArea .kop-left { flex: 0 0 auto !important; }
+            #printArea .kop-logo {
                 width: 158px !important;
                 height: auto !important;
                 object-fit: contain !important;
                 display: block !important;
             }
-            .kop-right {
+            #printArea .kop-right {
                 flex: 1 1 auto !important;
                 min-width: 0;
             }
-            .company-title {
+            #printArea .company-title {
                 font-size: 9.5pt !important;
                 font-weight: 700 !important;
                 color: #0a4194 !important;
                 letter-spacing: 0.3px !important;
                 margin-bottom: 4px !important;
             }
-            .address-row {
+            #printArea .address-row {
                 display: flex !important;
                 gap: 16px !important;
             }
-            .address-col {
+            #printArea .address-col {
                 flex: 1 1 0 !important;
                 font-size: 6.8pt !important;
                 line-height: 1.5 !important;
                 color: #475569 !important;
             }
-            .address-col strong { color: #0f172a; font-weight: 700; }
+            #printArea .address-col strong { color: #0f172a; font-weight: 700; }
 
             /* ---------- Judul + nomor memo ---------- */
-            .doc-head {
+            #printArea .doc-head {
                 display: flex;
                 justify-content: space-between;
                 align-items: flex-end;
                 margin-bottom: 10px;
             }
-            .document-title {
+            #printArea .document-title {
                 font-size: 27pt;
                 font-weight: 800;
                 letter-spacing: 3px;
@@ -225,58 +185,58 @@
                 line-height: 1;
                 margin: 0;
             }
-            .doc-ref { text-align: right; }
-            #targetMemoNo {
+            #printArea .doc-ref { text-align: right; }
+            #printArea #targetMemoNo {
                 font-size: 11pt;
                 font-weight: 700;
                 letter-spacing: 0.3px;
                 color: #0f172a;
             }
-            #targetMemoDate {
+            #printArea #targetMemoDate {
                 font-size: 8.5pt;
                 color: #64748b;
                 margin-top: 1px;
             }
 
             /* ---------- Informasi memo ---------- */
-            .meta-card {
+            #printArea .meta-card {
                 flex: 1;
                 background: transparent;
                 border: 1px solid #dbe3ef;
                 border-radius: 10px;
                 padding: 7px 16px;
             }
-            .meta-table {
+            #printArea .meta-table {
                 width: 100%;
                 border-collapse: collapse;
                 margin: 0;
             }
-            .meta-table td {
+            #printArea .meta-table td {
                 padding: 3px 0;
                 vertical-align: top;
                 font-size: 9.5pt;
             }
-            .meta-table td.label {
+            #printArea .meta-table td.label {
                 width: 78px;
                 color: #64748b;
                 font-size: 8.5pt;
                 font-weight: 500;
                 padding-top: 5px;
             }
-            .meta-table td.separator {
+            #printArea .meta-table td.separator {
                 width: 12px;
                 text-align: center;
                 color: #94a3b8;
             }
-            .dotted-line { border-bottom: 1px solid #dbe3ef; }
-            .to-name {
+            #printArea .dotted-line { border-bottom: 1px solid #dbe3ef; }
+            #printArea .to-name {
                 font-size: 11.5pt;
                 font-weight: 700;
                 color: #0a4194;
                 text-transform: uppercase;
                 letter-spacing: 0.2px;
             }
-            .image-attachment-box {
+            #printArea .image-attachment-box {
                 width: 140px;
                 text-align: center;
                 font-size: 7.5pt;
@@ -284,7 +244,7 @@
                 color: #64748b;
                 flex-shrink: 0;
             }
-            .image-attachment-box img {
+            #printArea .image-attachment-box img {
                 width: 100%;
                 max-height: 140px;
                 object-fit: contain;
@@ -295,7 +255,7 @@
             }
 
             /* ---------- Tabel barang ---------- */
-            .items-table {
+            #printArea .items-table {
                 width: 100%;
                 border-collapse: separate;
                 border-spacing: 0;
@@ -304,7 +264,7 @@
                 border-radius: 10px;
                 overflow: hidden;
             }
-            .items-table th {
+            #printArea .items-table th {
                 background-color: transparent !important;
                 color: #0a4194 !important;
                 border: none;
@@ -315,36 +275,36 @@
                 letter-spacing: 0.4px;
                 text-align: center;
             }
-            .items-table th:nth-child(2) { text-align: left; }
-            .items-table td {
+            #printArea .items-table th:nth-child(2) { text-align: left; }
+            #printArea .items-table td {
                 border: none;
                 border-bottom: 1px solid #e6ecf5;
                 padding: 4px 9px;
                 font-size: 9.5pt;
             }
-            .items-table tbody tr:nth-child(even) td { background-color: transparent; }
-            .items-table tbody tr:last-child td { border-bottom: none; }
-            .text-center { text-align: center; }
-            .text-left { text-align: left; }
+            #printArea .items-table tbody tr:nth-child(even) td { background-color: transparent; }
+            #printArea .items-table tbody tr:last-child td { border-bottom: none; }
+            #printArea .text-center { text-align: center; }
+            #printArea .text-left { text-align: left; }
 
             /* ---------- Tanda tangan digital ---------- */
-            .secure-bg {
+            #printArea .secure-bg {
                 background: none !important;
                 background-image: none !important;
             }
-            .sig-container {
+            #printArea .sig-container {
                 display: block;
                 width: 100%;
                 margin-top: 16px;
                 border: none;
                 page-break-inside: avoid;
             }
-            .sig-container.secure-bg { background-image: none !important; }
-            .sig-row {
+            #printArea .sig-container.secure-bg { background-image: none !important; }
+            #printArea .sig-row {
                 display: flex;
                 gap: 12px;
             }
-            .sig-cell {
+            #printArea .sig-cell {
                 display: block;
                 flex: 1 1 0;
                 min-width: 0;
@@ -353,7 +313,7 @@
                 border-radius: 10px;
                 background: transparent;
             }
-            .sig-title {
+            #printArea .sig-title {
                 display: block;
                 margin-bottom: 8px;
                 font-size: 7.5pt;
@@ -362,13 +322,13 @@
                 text-transform: uppercase;
                 color: #0a4194;
             }
-            .sig-body {
+            #printArea .sig-body {
                 display: flex;
                 align-items: center;
                 gap: 12px;
             }
-            .sig-qr-wrapper { flex: 0 0 auto; }
-            .sig-qr-img {
+            #printArea .sig-qr-wrapper { flex: 0 0 auto; }
+            #printArea .sig-qr-img {
                 width: 70px;
                 height: 70px;
                 display: block;
@@ -378,20 +338,20 @@
                 border: 1px solid #dbe3ef;
                 border-radius: 8px;
             }
-            .sig-details {
+            #printArea .sig-details {
                 flex: 1 1 auto;
                 min-width: 0;
                 font-size: 7.5pt;
                 line-height: 1.4;
                 color: #64748b;
             }
-            .sig-name {
+            #printArea .sig-name {
                 font-size: 10pt;
                 font-weight: 700;
                 color: #0f172a;
                 margin-top: 3px;
             }
-            .sig-qr-placeholder {
+            #printArea .sig-qr-placeholder {
                 width: 70px;
                 height: 70px;
                 box-sizing: border-box;
@@ -406,14 +366,14 @@
                 line-height: 1.25;
                 color: #94a3b8;
             }
-            .sig-meta {
+            #printArea .sig-meta {
                 font-size: 7.5pt;
                 color: #64748b;
                 margin-top: 2px;
             }
 
             /* ---------- Panel validasi dokumen ---------- */
-            .validation-panel {
+            #printArea .validation-panel {
                 display: flex;
                 align-items: center;
                 gap: 16px;
@@ -426,7 +386,7 @@
                 background: transparent;
                 page-break-inside: avoid;
             }
-            .vp-qr-img {
+            #printArea .vp-qr-img {
                 width: 88px;
                 height: 88px;
                 flex-shrink: 0;
@@ -437,27 +397,27 @@
                 border: 1px solid #dbe3ef;
                 border-radius: 8px;
             }
-            .vp-body { flex: 1; min-width: 0; }
-            .vp-eyebrow {
+            #printArea .vp-body { flex: 1; min-width: 0; }
+            #printArea .vp-eyebrow {
                 font-size: 6.5pt;
                 font-weight: 700;
                 letter-spacing: 1px;
                 text-transform: uppercase;
                 color: #0a4194;
             }
-            .vp-title {
+            #printArea .vp-title {
                 font-size: 11pt;
                 font-weight: 700;
                 color: #0f172a;
                 margin: 2px 0 4px 0;
             }
-            .vp-text {
+            #printArea .vp-text {
                 font-size: 7.4pt;
                 line-height: 1.45;
                 color: #475569;
                 text-align: left;
             }
-            .vp-hash-label {
+            #printArea .vp-hash-label {
                 display: block;
                 margin-top: 6px;
                 font-size: 6.3pt;
@@ -466,7 +426,7 @@
                 text-transform: uppercase;
                 color: #64748b;
             }
-            .security-hash {
+            #printArea .security-hash {
                 font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
                 font-size: 7pt;
                 font-weight: 600;
@@ -479,7 +439,49 @@
                 margin-top: 3px;
                 word-break: break-all;
             }
-    </style>
+    
+</style>
+<style id="liveStyles">
+#livePanel{display:none;margin-top:24px}#livePanel.live-active{display:block}
+.live-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:10px}
+.live-title{font-size:14px;font-weight:800;color:#1e293b}
+.live-btn{padding:7px 13px;border-radius:10px;font-size:12px;font-weight:700;border:1px solid #cbd5e1;background:#fff;color:#334155;cursor:pointer}
+.live-btn.primary{background:#d97706;border-color:#d97706;color:#fff}
+.live-bar{display:flex;gap:10px;align-items:center;padding:10px 14px;border-radius:12px;border:1px solid #fde68a;background:#fffbeb;margin-bottom:12px;transition:all .4s}
+.live-bar.approved{background:#ecfdf5;border-color:#a7f3d0}.live-bar.rejected{background:#fef2f2;border-color:#fecaca}
+.live-bar.flash{box-shadow:0 0 0 4px rgba(16,185,129,.35)}
+.lb-icon{font-size:20px}.lb-title{font-weight:800;font-size:13px;color:#0f172a}.lb-sub{font-size:11px;color:#64748b}
+.lb-chip{margin-left:auto;font-size:10px;font-weight:700;background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:3px 9px;color:#475569;white-space:nowrap}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#f59e0b;margin-right:6px;animation:pdot 1.2s infinite}
+@keyframes pdot{50%{opacity:.25}}
+#docStage{padding:16px;background:#e2e8f0;border-radius:14px;overflow:hidden}
+#docFrame{margin:0 auto;position:relative}#docScaler{width:210mm;height:296mm;transform-origin:0 0}
+#toastHost{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);z-index:10000;display:flex;flex-direction:column;gap:8px;align-items:center;width:90%;max-width:420px}
+.toast{background:#1e293b;color:#fff;padding:10px 14px;border-radius:12px;font-size:12px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.ok{background:#047857}.toast.err{background:#b91c1c}
+#choiceModal{position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.6);padding:16px}
+#choiceModal.hidden{display:none!important}
+.choice-card{background:#fff;border-radius:18px;padding:20px;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.choice-btn{display:block;width:100%;text-align:left;padding:12px 14px;margin-top:10px;border-radius:12px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:700;font-size:13px;cursor:pointer}
+.choice-btn small{display:block;font-weight:500;color:#64748b;font-size:11px;margin-top:2px}
+.choice-btn.wa{background:#16a34a;border-color:#16a34a;color:#fff}.choice-btn.wa small{color:#dcfce7}
+.choice-btn:disabled{opacity:.6;cursor:wait}
+.spinner{display:inline-block;width:10px;height:10px;border:2px solid #cbd5e1;border-top-color:#16a34a;border-radius:50%;margin-right:6px;animation:spn .7s linear infinite}
+@keyframes spn{to{transform:rotate(360deg)}}
+@media print{
+ @page{size:A4;margin:0}
+ html,body{margin:0!important;padding:0!important;background:#fff!important;display:block!important;height:auto!important;min-height:0!important;overflow:visible!important}
+ body>*:not(#appArea){display:none!important}
+ #appArea{display:block!important;width:210mm!important;max-width:none!important;margin:0!important;padding:0!important}
+ #appArea>*:not(#livePanel){display:none!important}
+ #livePanel{display:block!important;margin:0!important;padding:0!important}
+ #livePanel>*:not(#docStage){display:none!important}
+ #docStage{padding:0!important;background:none!important;border-radius:0!important;overflow:visible!important}
+ #docFrame{width:210mm!important;height:296mm!important;margin:0!important}
+ #docScaler{transform:none!important}
+ #printArea{box-shadow:none!important;break-inside:avoid;page-break-after:avoid}
+}
+</style>
 </head>
 <body class="flex items-center justify-center p-3 md:p-6">
 
@@ -651,7 +653,7 @@
                 <div id="statusProsedurContainer" class="text-xs text-gray-600 bg-blue-50 p-3 rounded-xl border border-blue-100 max-w-md w-full shadow-inner">
                     <span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>
                     1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>
-                    2. Sistem akan mengunci data dan membuka tombol <strong class="text-amber-600">Cetak PDF</strong>.
+                    2. Sistem akan mengunci data dan menampilkan <strong class="text-amber-600">Dokumen Live</strong> yang otomatis berubah saat di-approve.
                 </div>
                 
                 <div class="flex gap-3 w-full sm:w-auto justify-end flex-wrap">
@@ -659,56 +661,24 @@
                         <span>💾</span> 1. Simpan ke System Memo
                     </button>
                     <button id="actionBtnPrint" onclick="triggerPrintWithAnimation()" class="w-full sm:w-auto px-6 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-sm transition-all duration-300 opacity-50 cursor-not-allowed shadow-lg shadow-amber-500/30 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2" disabled>
-                        <span>🖨️</span> 2. Cetak / Unduh PDF
+                        <span>🖨️</span> 2. Cetak / Bagikan PDF
                     </button>
                 </div>
             </div>
             <p id="cloudStatusOutput" class="text-xs text-right mt-3 font-semibold"></p>
         </div>
-    </div>
-
-    <div id="animationOverlay" class="hidden fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300">
-        <div class="relative w-full max-w-2xl h-64 bg-gray-900 rounded-2xl border-4 border-gray-700 shadow-[0_0_50px_rgba(0,0,0,0.6)] overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-800"></div>
-            <div class="absolute top-4 right-10 w-12 h-12 bg-yellow-100 rounded-full shadow-[0_0_20px_white] opacity-80"></div>
-            
-            <div class="absolute bottom-0 left-0 w-full h-16 bg-gray-700 border-t-4 border-gray-600"></div>
-            
-            <div class="absolute bottom-6 left-0 w-[200%] h-2 flex gap-8 animate-road-move">
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
-            </div>
-
-            <div id="deliveryTruckPos" class="absolute bottom-6 left-0 z-10" style="transform: translateX(-250px);">
-                <div class="animate-truck-bounce flex items-end">
-                    <div class="bg-gray-100 w-40 h-28 rounded-l-xl border-4 border-gray-400 relative flex flex-col items-center justify-center shadow-inner">
-                        <span class="text-6xl animate-bounce" style="animation-duration: 0.6s;">📄</span>
-                        <span class="text-xs font-black text-gray-700 mt-1 tracking-widest">MSB ERP</span>
-                    </div>
-                    <div class="bg-blue-600 w-20 h-20 rounded-tr-2xl rounded-br-lg border-4 border-blue-800 relative shadow-lg flex flex-col justify-between">
-                        <div class="absolute top-2 right-2 w-10 h-8 bg-cyan-200/80 rounded-tr-xl border border-gray-400"></div>
-                        <div class="absolute right-[-120px] bottom-1 w-32 h-12 bg-gradient-to-r from-yellow-300/90 to-transparent rounded-full blur-md shadow-[0_0_20px_yellow]"></div>
-                        <div class="absolute right-[-4px] bottom-3 w-3 h-5 bg-yellow-100 rounded-full shadow-[0_0_10px_white]"></div>
-                    </div>
-                    <div class="absolute bottom-[-12px] left-8 w-10 h-10 bg-gray-900 rounded-full border-4 border-gray-400 animate-spin-slow flex items-center justify-center"><div class="w-3 h-3 bg-gray-400 rounded-full"></div></div>
-                    <div class="absolute bottom-[-12px] right-4 w-10 h-10 bg-gray-900 rounded-full border-4 border-gray-400 animate-spin-slow flex items-center justify-center"><div class="w-3 h-3 bg-gray-400 rounded-full"></div></div>
+    
+        <div id="livePanel">
+            <div class="live-head">
+                <div class="live-title">📄 Dokumen Live <span id="liveMemoNo" style="color:#2563eb"></span></div>
+                <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <button type="button" class="live-btn" onclick="pollNow()">🔄 Cek Approval</button>
+                    <button type="button" class="live-btn primary" onclick="openPrintChoice()">🖨️ Cetak / Bagikan</button>
+                    <button type="button" class="live-btn" onclick="closeLiveDoc()">✕ Tutup</button>
                 </div>
             </div>
-            
-            <div id="truckAnimText" class="absolute top-8 w-full text-center text-white font-black text-2xl tracking-widest animate-pulse drop-shadow-lg z-20">MEMPROSES DATA...</div>
-        </div>
-    </div>
-
-
-    <div id="printArea">
+            <div id="liveStatusBar" class="live-bar"></div>
+            <div id="docStage"><div id="docFrame"><div id="docScaler"><div id="printArea"><div id="docFit">
         <div class="kop-container">
             <div class="kop-left">
                 <img src="MSB Logo.png" alt="Logo MSB" class="kop-logo">
@@ -857,6 +827,7 @@
         
         <div class="validation-panel secure-bg">
             <img id="qrCodeImgValidasi" class="vp-qr-img" alt="QR Validasi Dokumen">
+            <div id="validationQrPlaceholder" class="sig-qr-placeholder" style="display:none;width:88px;height:88px">QR belum<br>tersedia</div>
             <div class="vp-body">
                 <div class="vp-eyebrow">Sistem Verifikasi Digital &middot; PT Murinda Sentra Baja</div>
                 <div class="vp-title">Cek validasi dokumen, scan QR</div>
@@ -865,7 +836,62 @@
                 <div id="targetSecurityHash" class="security-hash">MSB-SECURE-PENDING-SYNC-VALIDATION-LOCK</div>
             </div>
         </div>
+    
+            </div></div></div></div></div>
+        </div>
     </div>
+
+    <div id="animationOverlay" class="hidden fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-sm transition-opacity duration-300">
+        <div class="relative w-full max-w-2xl h-64 bg-gray-900 rounded-2xl border-4 border-gray-700 shadow-[0_0_50px_rgba(0,0,0,0.6)] overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-b from-gray-900 to-gray-800"></div>
+            <div class="absolute top-4 right-10 w-12 h-12 bg-yellow-100 rounded-full shadow-[0_0_20px_white] opacity-80"></div>
+            
+            <div class="absolute bottom-0 left-0 w-full h-16 bg-gray-700 border-t-4 border-gray-600"></div>
+            
+            <div class="absolute bottom-6 left-0 w-[200%] h-2 flex gap-8 animate-road-move">
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+                <div class="w-16 h-full bg-yellow-400/80 rounded"></div>
+            </div>
+
+            <div id="deliveryTruckPos" class="absolute bottom-6 left-0 z-10" style="transform: translateX(-250px);">
+                <div class="animate-truck-bounce flex items-end">
+                    <div class="bg-gray-100 w-40 h-28 rounded-l-xl border-4 border-gray-400 relative flex flex-col items-center justify-center shadow-inner">
+                        <span class="text-6xl animate-bounce" style="animation-duration: 0.6s;">📄</span>
+                        <span class="text-xs font-black text-gray-700 mt-1 tracking-widest">MSB ERP</span>
+                    </div>
+                    <div class="bg-blue-600 w-20 h-20 rounded-tr-2xl rounded-br-lg border-4 border-blue-800 relative shadow-lg flex flex-col justify-between">
+                        <div class="absolute top-2 right-2 w-10 h-8 bg-cyan-200/80 rounded-tr-xl border border-gray-400"></div>
+                        <div class="absolute right-[-120px] bottom-1 w-32 h-12 bg-gradient-to-r from-yellow-300/90 to-transparent rounded-full blur-md shadow-[0_0_20px_yellow]"></div>
+                        <div class="absolute right-[-4px] bottom-3 w-3 h-5 bg-yellow-100 rounded-full shadow-[0_0_10px_white]"></div>
+                    </div>
+                    <div class="absolute bottom-[-12px] left-8 w-10 h-10 bg-gray-900 rounded-full border-4 border-gray-400 animate-spin-slow flex items-center justify-center"><div class="w-3 h-3 bg-gray-400 rounded-full"></div></div>
+                    <div class="absolute bottom-[-12px] right-4 w-10 h-10 bg-gray-900 rounded-full border-4 border-gray-400 animate-spin-slow flex items-center justify-center"><div class="w-3 h-3 bg-gray-400 rounded-full"></div></div>
+                </div>
+            </div>
+            
+            <div id="truckAnimText" class="absolute top-8 w-full text-center text-white font-black text-2xl tracking-widest animate-pulse drop-shadow-lg z-20">MEMPROSES DATA...</div>
+        </div>
+    </div>
+
+
+    <div id="choiceModal" class="hidden"><div class="choice-card">
+        <div style="font-weight:800;font-size:15px;color:#0f172a">Cetak / Bagikan Memo</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">Nama file otomatis: <b id="choiceFileName"></b></div>
+        <button type="button" id="choiceWa" class="choice-btn wa" onclick="shareToWhatsApp()" disabled>💬 Bagikan ke WhatsApp (PDF)<small id="choiceWaHint"></small></button>
+        <button type="button" id="choiceDownload" class="choice-btn" onclick="downloadPdf()">⬇️ Unduh PDF<small>Nama file otomatis, 1 halaman A4</small></button>
+        <button type="button" class="choice-btn" onclick="choosePrint()">🖨️ Cetak / Simpan sebagai PDF<small>Dialog cetak browser, A4 pas 1 halaman</small></button>
+        <div id="choiceError" class="hidden" style="color:#b91c1c;font-size:11px;margin-top:10px"></div>
+        <button type="button" class="choice-btn" style="text-align:center" onclick="closePrintChoice()">Batal</button>
+    </div></div>
+    <div id="toastHost"></div>
 
     <script>
         // ==========================================
@@ -926,15 +952,7 @@
             });
         }
 
-        function triggerPrintWithAnimation() {
-            if (!cloudGeneratedMemoNo) {
-                alert("Peringatan: Harap simpan data (Buat Baru) atau pilih riwayat dokumen (Cetak Ulang) terlebih dahulu.");
-                return;
-            }
-            playTruckAnimation("MEMPERSIAPKAN DOKUMEN CETAK...", () => {
-                preparePrintLayout();
-            });
-        }
+        function triggerPrintWithAnimation() { openPrintChoice(); }
         // ----------------------------------------
 
         // --- MASTER DEPARTEMEN (Code.gs ?action=master -> sheet Master_Departemen) ---
@@ -1170,6 +1188,7 @@
         }
 
         function resetAppToBlank() {
+            if (typeof closeLiveDoc === "function") closeLiveDoc();
             document.getElementById('selectDeptPengirim').value = "";
             currentApproval = null;
             currentPembuat = null;
@@ -1303,6 +1322,8 @@
                 
                 document.getElementById('cloudStatusOutput').className = "text-xs text-right mt-3 text-purple-600 font-bold";
                 document.getElementById('cloudStatusOutput').innerText = "✔ Data System MEMO berhasil dimuat lengkap dan siap dicetak!";
+                liveDoc = docFromHistory(memo);
+                showLiveDoc(true);
             }
         }
 
@@ -1356,9 +1377,9 @@
                 btnPrint.disabled = true;
                 btnPrint.classList.add('opacity-50', 'cursor-not-allowed', 'bg-amber-500', 'hover:bg-amber-600', 'sm:w-auto');
                 btnPrint.classList.remove('w-full', 'bg-gradient-to-r', 'from-purple-600', 'to-blue-600', 'hover:from-purple-500', 'hover:to-blue-500');
-                btnPrint.innerHTML = "<span>🖨️</span> 2. Cetak / Unduh PDF";
+                btnPrint.innerHTML = "<span>🖨️</span> 2. Cetak / Bagikan PDF";
                 
-                statusContainer.innerHTML = `<span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>2. Sistem akan mengunci data dan membuka tombol <strong class="text-amber-600">Cetak PDF</strong>.`;
+                statusContainer.innerHTML = `<span class="text-blue-600 font-bold">💡 Prosedur Keamanan Terintegrasi:</span><br>1. Klik <strong class="text-emerald-600">Simpan</strong> untuk merekam data urut ke Cloud.<br>2. Sistem akan mengunci data dan menampilkan <strong class="text-amber-600">Dokumen Live</strong> yang otomatis berubah saat di-approve.`;
                 
                 cloudGeneratedMemoNo = "";
                 cloudGeneratedDateString = "";
@@ -1534,6 +1555,8 @@
 
                     statusIndicator.className = "text-xs text-right mt-3 text-emerald-600 font-bold";
                     statusIndicator.innerHTML = `✔ Berhasil Tersimpan! Nomor Terbit Otomatis: ${cloudGeneratedMemoNo}`;
+                    liveDoc = docFromSavedMemo(transactionPayload, serverResultJson);
+                    showLiveDoc(true);
                     
                     btnPrint.disabled = false;
                     btnPrint.classList.remove('opacity-50', 'cursor-not-allowed');
@@ -1556,8 +1579,413 @@
             });
         }
 
-        function computeSecurityHashSignature(memoNo, requester, subject, itemCount) {
-            const timestampSeed = new Date().getTime();
+// ===== QR Code generator (mandiri, mode byte, versi 1-40, ECC L/M/Q/H) =====
+// Dipakai supaya QR dibuat langsung di browser (tanpa api.qrserver.com): tampil instan,
+// tajam saat dicetak, dan ikut masuk ke PDF yang dibagikan ke WhatsApp.
+const QrCode = (function () {
+    const ECC_IDX = { L: 0, M: 1, Q: 2, H: 3 };
+    const ECC_FORMAT_BITS = [1, 0, 3, 2];                 // L, M, Q, H
+    const MAX_VER = 40;
+    const ECC_PER_BLOCK = [
+        [-1, 7, 10, 15, 20, 26, 18, 20, 24, 30, 18, 20, 24, 26, 30, 22, 24, 28, 30, 28, 28, 28, 28, 30, 30, 26, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
+        [-1, 10, 16, 26, 18, 24, 16, 18, 22, 22, 26, 30, 22, 22, 24, 24, 28, 28, 26, 26, 26, 26, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28, 28],
+        [-1, 13, 22, 18, 26, 18, 24, 18, 22, 20, 24, 28, 26, 24, 20, 30, 24, 28, 28, 26, 30, 28, 30, 30, 30, 30, 28, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30],
+        [-1, 17, 28, 22, 16, 22, 28, 26, 26, 24, 28, 24, 28, 22, 24, 24, 30, 28, 28, 26, 28, 30, 24, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30]
+    ];
+    const NUM_BLOCKS = [
+        [-1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 4, 4, 4, 4, 4, 6, 6, 6, 6, 7, 8, 8, 9, 9, 10, 12, 12, 12, 13, 14, 15, 16, 17, 18, 19, 19, 20, 21, 22, 24, 25],
+        [-1, 1, 1, 1, 2, 2, 4, 4, 4, 5, 5, 5, 8, 9, 9, 10, 10, 11, 13, 14, 16, 17, 17, 18, 20, 21, 23, 25, 26, 28, 29, 31, 33, 35, 37, 38, 40, 43, 45, 47, 49],
+        [-1, 1, 1, 2, 2, 4, 4, 6, 6, 8, 8, 8, 10, 12, 16, 12, 17, 16, 18, 21, 20, 23, 23, 25, 27, 29, 34, 34, 35, 38, 40, 43, 45, 48, 51, 53, 56, 59, 62, 65, 68],
+        [-1, 1, 1, 2, 4, 4, 4, 5, 6, 8, 8, 11, 11, 16, 16, 18, 16, 19, 21, 25, 25, 25, 34, 30, 32, 35, 37, 40, 42, 45, 48, 51, 54, 57, 60, 63, 66, 70, 74, 77, 81]
+    ];
+
+    function rawModules(ver) {
+        let r = (16 * ver + 128) * ver + 64;
+        if (ver >= 2) {
+            const na = Math.floor(ver / 7) + 2;
+            r -= (25 * na - 10) * na - 55;
+            if (ver >= 7) r -= 36;
+        }
+        return r;
+    }
+    function dataCodewords(ver, e) {
+        return Math.floor(rawModules(ver) / 8) - ECC_PER_BLOCK[e][ver] * NUM_BLOCKS[e][ver];
+    }
+    // Kapasitas data (byte) pada versi + level tertentu (mode byte)
+    function capacityBytes(ver, level) {
+        const e = ECC_IDX[level];
+        return Math.floor((dataCodewords(ver, e) * 8 - 4 - (ver < 10 ? 8 : 16)) / 8);
+    }
+
+    // ----- Reed-Solomon (GF(256), polinomial 0x11D)
+    function gfMul(x, y) {
+        let z = 0;
+        for (let i = 7; i >= 0; i--) {
+            z = (z << 1) ^ ((z >>> 7) * 0x11D);
+            z ^= ((y >>> i) & 1) * x;
+        }
+        return z;
+    }
+    function rsDivisor(degree) {
+        const result = new Array(degree).fill(0);
+        result[degree - 1] = 1;
+        let root = 1;
+        for (let i = 0; i < degree; i++) {
+            for (let j = 0; j < degree; j++) {
+                result[j] = gfMul(result[j], root);
+                if (j + 1 < degree) result[j] ^= result[j + 1];
+            }
+            root = gfMul(root, 0x02);
+        }
+        return result;
+    }
+    function rsRemainder(data, divisor) {
+        const result = new Array(divisor.length).fill(0);
+        data.forEach(b => {
+            const factor = b ^ result.shift();
+            result.push(0);
+            divisor.forEach((coef, i) => { result[i] ^= gfMul(coef, factor); });
+        });
+        return result;
+    }
+
+    function alignmentPositions(ver) {
+        if (ver === 1) return [];
+        const n = Math.floor(ver / 7) + 2;
+        const step = (ver === 32) ? 26 : Math.ceil((ver * 4 + 4) / (n * 2 - 2)) * 2;
+        const res = [6];
+        for (let pos = ver * 4 + 10; res.length < n; pos -= step) res.splice(1, 0, pos);
+        return res;
+    }
+
+    const getBit = (x, i) => ((x >>> i) & 1) !== 0;
+
+    // Mengembalikan { version, size, modules[y][x] (true = gelap), mask, level }
+    function encode(text, level) {
+        level = level || 'M';
+        const e = ECC_IDX[level];
+        if (e === undefined) throw new Error("QR: level ECC tidak dikenal");
+        const bytes = Array.from(new TextEncoder().encode(String(text)));
+
+        let ver = 1;
+        for (; ver <= MAX_VER; ver++) {
+            const need = 4 + (ver < 10 ? 8 : 16) + bytes.length * 8;
+            if (need <= dataCodewords(ver, e) * 8) break;
+        }
+        if (ver > MAX_VER) throw new Error("QR: data terlalu panjang");
+
+        // --- bit data: mode byte, panjang, isi, terminator, padding
+        const bits = [];
+        const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+        push(0x4, 4);
+        push(bytes.length, ver < 10 ? 8 : 16);
+        bytes.forEach(b => push(b, 8));
+        const capBits = dataCodewords(ver, e) * 8;
+        push(0, Math.min(4, capBits - bits.length));
+        push(0, (8 - bits.length % 8) % 8);
+        for (let pad = 0xEC; bits.length < capBits; pad ^= 0xEC ^ 0x11) push(pad, 8);
+
+        const data = new Array(bits.length >>> 3).fill(0);
+        bits.forEach((b, i) => { data[i >>> 3] |= b << (7 - (i & 7)); });
+
+        // --- blok + error correction, lalu interleave
+        const numBlocks = NUM_BLOCKS[e][ver];
+        const blockEccLen = ECC_PER_BLOCK[e][ver];
+        const rawCw = Math.floor(rawModules(ver) / 8);
+        const numShort = numBlocks - rawCw % numBlocks;
+        const shortLen = Math.floor(rawCw / numBlocks);
+        const blocks = [];
+        const div = rsDivisor(blockEccLen);
+        for (let i = 0, k = 0; i < numBlocks; i++) {
+            const dat = data.slice(k, k + shortLen - blockEccLen + (i < numShort ? 0 : 1));
+            k += dat.length;
+            const ecc = rsRemainder(dat, div);
+            if (i < numShort) dat.push(0);
+            blocks.push(dat.concat(ecc));
+        }
+        const all = [];
+        for (let i = 0; i < blocks[0].length; i++) {
+            blocks.forEach((blk, j) => {
+                if (i !== shortLen - blockEccLen || j >= numShort) all.push(blk[i]);
+            });
+        }
+
+        // --- matriks
+        const size = ver * 4 + 17;
+        const modules = Array.from({ length: size }, () => new Array(size).fill(false));
+        const isFn = Array.from({ length: size }, () => new Array(size).fill(false));
+        const setFn = (x, y, dark) => { modules[y][x] = dark; isFn[y][x] = true; };
+
+        for (let i = 0; i < size; i++) {                       // timing
+            setFn(6, i, i % 2 === 0);
+            setFn(i, 6, i % 2 === 0);
+        }
+        const finder = (cx, cy) => {
+            for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++) {
+                const dist = Math.max(Math.abs(dx), Math.abs(dy));
+                const xx = cx + dx, yy = cy + dy;
+                if (xx >= 0 && xx < size && yy >= 0 && yy < size) setFn(xx, yy, dist !== 2 && dist !== 4);
+            }
+        };
+        finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+        const align = alignmentPositions(ver);
+        for (let i = 0; i < align.length; i++) for (let j = 0; j < align.length; j++) {
+            if ((i === 0 && j === 0) || (i === 0 && j === align.length - 1) || (i === align.length - 1 && j === 0)) continue;
+            for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++) {
+                setFn(align[i] + dx, align[j] + dy, Math.max(Math.abs(dx), Math.abs(dy)) !== 1);
+            }
+        }
+
+        const drawFormat = (mask) => {
+            const d = (ECC_FORMAT_BITS[e] << 3) | mask;
+            let rem = d;
+            for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+            const fb = ((d << 10) | rem) ^ 0x5412;
+            for (let i = 0; i <= 5; i++) setFn(8, i, getBit(fb, i));
+            setFn(8, 7, getBit(fb, 6));
+            setFn(8, 8, getBit(fb, 7));
+            setFn(7, 8, getBit(fb, 8));
+            for (let i = 9; i < 15; i++) setFn(14 - i, 8, getBit(fb, i));
+            for (let i = 0; i < 8; i++) setFn(size - 1 - i, 8, getBit(fb, i));
+            for (let i = 8; i < 15; i++) setFn(8, size - 15 + i, getBit(fb, i));
+            setFn(8, size - 8, true);
+        };
+        drawFormat(0);                                          // cadangkan area format dulu
+        if (ver >= 7) {
+            let rem = ver;
+            for (let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1F25);
+            const vb = (ver << 12) | rem;
+            for (let i = 0; i < 18; i++) {
+                const c = getBit(vb, i);
+                const a = size - 11 + i % 3, b = Math.floor(i / 3);
+                setFn(a, b, c);
+                setFn(b, a, c);
+            }
+        }
+
+        // --- tempatkan data (zig-zag)
+        let bi = 0;
+        for (let right = size - 1; right >= 1; right -= 2) {
+            if (right === 6) right = 5;
+            for (let vert = 0; vert < size; vert++) {
+                for (let j = 0; j < 2; j++) {
+                    const x = right - j;
+                    const upward = ((right + 1) & 2) === 0;
+                    const y = upward ? size - 1 - vert : vert;
+                    if (!isFn[y][x] && bi < all.length * 8) {
+                        modules[y][x] = getBit(all[bi >>> 3], 7 - (bi & 7));
+                        bi++;
+                    }
+                }
+            }
+        }
+
+        // --- pilih mask dengan penalti terendah
+        const applyMask = (mask) => {
+            for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+                let inv;
+                switch (mask) {
+                    case 0: inv = (x + y) % 2 === 0; break;
+                    case 1: inv = y % 2 === 0; break;
+                    case 2: inv = x % 3 === 0; break;
+                    case 3: inv = (x + y) % 3 === 0; break;
+                    case 4: inv = (Math.floor(x / 3) + Math.floor(y / 2)) % 2 === 0; break;
+                    case 5: inv = x * y % 2 + x * y % 3 === 0; break;
+                    case 6: inv = (x * y % 2 + x * y % 3) % 2 === 0; break;
+                    default: inv = ((x + y) % 2 + x * y % 3) % 2 === 0; break;
+                }
+                if (!isFn[y][x] && inv) modules[y][x] = !modules[y][x];
+            }
+        };
+        const penalty = () => {
+            let score = 0;
+            const lines = [];
+            for (let i = 0; i < size; i++) {
+                const row = [], col = [];
+                for (let j = 0; j < size; j++) { row.push(modules[i][j] ? 1 : 0); col.push(modules[j][i] ? 1 : 0); }
+                lines.push(row, col);
+            }
+            const P1 = '10111010000', P2 = '00001011101';
+            lines.forEach(line => {
+                let run = 1;
+                for (let k = 1; k <= size; k++) {                  // aturan 1: deret warna sama
+                    if (k < size && line[k] === line[k - 1]) run++;
+                    else { if (run >= 5) score += 3 + (run - 5); run = 1; }
+                }
+                const s = line.join('');                           // aturan 3: pola mirip finder
+                for (let k = 0; k + 11 <= s.length; k++) {
+                    const sub = s.substr(k, 11);
+                    if (sub === P1 || sub === P2) score += 40;
+                }
+            });
+            for (let y = 0; y < size - 1; y++) for (let x = 0; x < size - 1; x++) {   // aturan 2: blok 2x2
+                const c = modules[y][x];
+                if (c === modules[y][x + 1] && c === modules[y + 1][x] && c === modules[y + 1][x + 1]) score += 3;
+            }
+            let dark = 0;
+            modules.forEach(r => r.forEach(v => { if (v) dark++; }));   // aturan 4: keseimbangan gelap/terang
+            const total = size * size;
+            score += (Math.ceil(Math.abs(dark * 20 - total * 10) / total) - 1) * 10;
+            return score;
+        };
+        let bestMask = 0, bestScore = Infinity;
+        for (let m = 0; m < 8; m++) {
+            applyMask(m);
+            drawFormat(m);
+            const s = penalty();
+            if (s < bestScore) { bestScore = s; bestMask = m; }
+            applyMask(m);                                          // XOR kedua = batalkan mask
+        }
+        applyMask(bestMask);
+        drawFormat(bestMask);
+
+        return { version: ver, size: size, modules: modules, mask: bestMask, level: level };
+    }
+
+    // Level yang diinginkan; kalau data terlalu panjang turun otomatis ke level lebih rendah
+    function encodeBest(text, level) {
+        const order = ['H', 'Q', 'M', 'L'];
+        const start = Math.max(0, order.indexOf(level || 'M'));
+        let lastErr = null;
+        for (let i = start; i < order.length; i++) {
+            try { return encode(text, order[i]); } catch (err) { lastErr = err; }
+        }
+        throw lastErr || new Error("QR: gagal membuat kode");
+    }
+
+    // PNG (data URL) dari canvas: modul bulat piksel, zona tenang `quiet` modul di sekeliling
+    function toDataUrl(text, opts) {
+        opts = opts || {};
+        const qr = encodeBest(text, opts.level || 'M');
+        const scale = opts.scale || 10;
+        const quiet = opts.quiet === undefined ? 2 : opts.quiet;
+        const px = (qr.size + quiet * 2) * scale;
+        const canvas = document.createElement('canvas');
+        canvas.width = canvas.height = px;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, px, px);
+        ctx.fillStyle = '#000000';
+        for (let y = 0; y < qr.size; y++) for (let x = 0; x < qr.size; x++) {
+            if (qr.modules[y][x]) ctx.fillRect((x + quiet) * scale, (y + quiet) * scale, scale, scale);
+        }
+        return canvas.toDataURL('image/png');
+    }
+
+    return { encode: encode, encodeBest: encodeBest, toDataUrl: toDataUrl, capacityBytes: capacityBytes, MAX_VER: MAX_VER };
+})();
+
+
+
+        // ==========================================================
+        // DOKUMEN LIVE
+        // liveDoc = salinan (snapshot) memo yang sedang ditampilkan: dari data yang barusan disimpan
+        // atau dari riwayat. Dokumen di layar, hasil cetak, dan PDF WhatsApp semuanya dirender dari
+        // snapshot ini, jadi selalu sama dengan data yang tersimpan di sheet (bukan isi form saat ini).
+        // ==========================================================
+        const $id = (id) => document.getElementById(id);
+
+        const TULIS_MARKER = "[SYSTEM_MEMO_TULIS_PARAGRAF]";
+        const DEFAULT_PEMBUKA = "Dengan hormat,\n\nBersama dengan memorandum ini...";   // sama dengan default di Code.gs
+        const DEFAULT_PENUTUP = "Demikian memorandum ini kami ajukan...";
+        const ORIGINAL_TITLE = document.title;
+
+        // Ukuran kertas (px CSS): A4 = 210 x 296 mm, isi = 180 x 270 mm (setelah margin 15/14/15/12 mm)
+        const MM_PX = 96 / 25.4;
+        const SHEET_W_PX = 210 * MM_PX;
+        const SHEET_H_PX = 296 * MM_PX;
+        const FIT_W_PX = 180 * MM_PX;
+        const FIT_H_PX = 270 * MM_PX;
+        const FIT_MIN_SCALE = 0.5;        // batas terkecil supaya tulisan tetap terbaca
+
+        let liveDoc = null;
+        let renderVersion = 0;            // naik setiap dokumen selesai dirender ulang
+        let docReady = Promise.resolve();
+        let fitInfo = { scale: 1, overflow: false };
+        let previewScale = 1;
+        let choiceOpen = false;
+        let titleBackup = null;
+        let pdfCache = { version: -1, file: null, promise: null, error: null };
+        const livePoll = { timer: null, startedAt: 0, inFlight: false, error: '', lastCheck: null, legacy: false, stopped: false, flashUntil: 0 };
+
+        function emptyApproval() { return { status: "", nama: "", tanggal: "", ttd: "" }; }
+
+        function normalizeApproval(a) {
+            a = a || {};
+            return {
+                status: String(a.status || "").trim(),
+                nama: String(a.nama || "").trim(),
+                tanggal: String(a.tanggal || "").trim(),
+                ttd: String(a.ttd || "").trim()
+            };
+        }
+
+        function todayLabel() {
+            return new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+
+        function isTulisMemo(memo) {
+            return !!(memo && memo.items && memo.items.length === 1 && String(memo.items[0].deskripsi).trim() === TULIS_MARKER);
+        }
+
+        // Dari data yang baru disimpan (payload yang dikirim + jawaban server)
+        function docFromSavedMemo(payload, result) {
+            const isTulis = payload.jenisMemo === 'tulis';
+            const user = authenticatedUserSession || { nama: "-", jabatan: "", digitalSign: "" };
+            return {
+                memoNo: result.memoNo,
+                date: result.date || todayLabel(),
+                jenis: isTulis ? 'tulis' : 'pengadaan',
+                kepada: payload.kepada || "",
+                penerima: payload.penerima === "-" ? "" : (payload.penerima || ""),
+                alamat: payload.alamat || "",
+                subjek: payload.subjek || "",
+                lampiran: payload.lampiran || "-",
+                gambar: payload.gambarBase64 || "",
+                departemen: payload.departemen || "",
+                items: isTulis ? [] : payload.items.map(i => ({ deskripsi: i.deskripsi, qty: i.qty, satuan: i.satuan })),
+                // sama seperti yang disimpan Code.gs (nilai kosong diganti default)
+                kalimatPembuka: payload.kalimatPembuka || DEFAULT_PEMBUKA,
+                isiMemo: payload.isiMemo || payload.subjek || "",
+                kalimatPenutup: payload.kalimatPenutup || DEFAULT_PENUTUP,
+                pembuat: { nama: user.nama, jabatan: user.jabatan || "", digitalSign: user.digitalSign || "" },
+                approval: emptyApproval(),
+                linkValidasi: "",
+                reprint: false,
+                seed: Date.now()
+            };
+        }
+
+        // Dari riwayat / hasil pemantauan server (bentuk sama dengan buildHistory di Code.gs)
+        function docFromHistory(memo) {
+            const tulis = isTulisMemo(memo);
+            const pembuat = memo.pembuat || {};
+            return {
+                memoNo: memo._memoNo,
+                date: memo._date || "",
+                jenis: tulis ? 'tulis' : 'pengadaan',
+                kepada: memo.kepada || "",
+                penerima: memo.penerima === "-" ? "" : (memo.penerima || ""),
+                alamat: memo.alamat || "",
+                subjek: memo.subjek || "",
+                lampiran: memo.lampiran || "-",
+                gambar: memo.gambarBase64 || "",
+                departemen: memo.departemen || "",
+                items: tulis ? [] : (memo.items || []).map(i => ({ deskripsi: String(i.deskripsi == null ? "" : i.deskripsi), qty: i.qty, satuan: i.satuan })),
+                kalimatPembuka: memo.kalimatPembuka || "",
+                isiMemo: memo.isiMemo || "",
+                kalimatPenutup: memo.kalimatPenutup || "",
+                pembuat: { nama: pembuat.nama || "", jabatan: pembuat.jabatan || "", digitalSign: pembuat.digitalSign || "" },
+                approval: normalizeApproval(memo.approval),
+                linkValidasi: String(memo.linkValidasi || "").trim(),
+                reprint: true,
+                seed: Date.now()
+            };
+        }
+
+        function computeSecurityHashSignature(memoNo, requester, subject, itemCount, seed) {
+            // seed dibuat sekali per dokumen supaya hash di layar, hasil cetak, dan PDF WhatsApp sama
+            const timestampSeed = seed || new Date().getTime();
             const complexRawString = `${memoNo}|${requester}|${subject}|${itemCount}|${timestampSeed}`;
             let signatureHashVal = 0;
             for (let i = 0; i < complexRawString.length; i++) {
@@ -1577,208 +2005,730 @@
             return 'unknown';
         }
 
+        // waiting | approved_nottd (disetujui, TTD belum muncul) | approved | rejected
+        function approvalState(doc) {
+            const a = doc.approval || emptyApproval();
+            const cls = classifyApproval(a.status);
+            if (cls === 'rejected') return 'rejected';
+            if (a.ttd && cls !== 'pending') return 'approved';
+            if (cls === 'approved') return 'approved_nottd';
+            return 'waiting';
+        }
+        const isFinalState = (doc) => { const s = approvalState(doc); return s === 'approved' || s === 'rejected'; };
+
         function buildValidationLink(memoNo) {
             return VALIDATION_BASE_URL + "?cek=" + encodeURIComponent("Memo|" + String(memoNo || "").trim());
         }
+        const validationLinkOf = (doc) => doc.linkValidasi || buildValidationLink(doc.memoNo);
 
-        // ---------- Pas 1 lembar A4 ----------
-        // Ukuran area cetak = A4 dikurangi margin @page pada <style id="printStyles">.
-        const PRINT_CONTENT_W_MM = 180;   // 210mm - 15mm - 15mm
-        const PRINT_CONTENT_H_MM = 271;   // 297mm - 14mm - 12mm
-        const PRINT_MIN_SCALE = 0.6;      // batas terkecil supaya tulisan tetap terbaca
+        // ---------- Nama file otomatis: "MSB-MEMO-037 - Subjek memo" ----------
+        function safeFilePart(s) {
+            return String(s || "").replace(/[\\/:*?"<>|\u0000-\u001f]+/g, " ").replace(/\s+/g, " ").trim();
+        }
+        function buildFileBase(doc) {
+            const no = safeFilePart(String(doc.memoNo || "MEMO").replace(/[\\/]+/g, "-")).replace(/\s+/g, "");
+            let subj = safeFilePart(doc.subjek);
+            if (subj.length > 60) subj = subj.slice(0, 60).replace(/\s+\S*$/, "").trim() || subj.slice(0, 60);
+            return subj ? `${no} - ${subj}` : no;
+        }
+        const buildFileName = (doc) => buildFileBase(doc) + ".pdf";
 
-        // Mengukur tinggi dokumen memakai gaya cetak (sementara), lalu mengecilkan (zoom)
-        // sampai muat satu lembar. Dokumen yang pendek tidak diubah (zoom = 1).
-        function fitPrintToOnePage() {
-            const area = document.getElementById('printArea');
-            const sheet = document.getElementById('printStyles');
-            if (!area || !sheet) return 1;
-
-            const mm = 96 / 25.4;
-            const maxH = PRINT_CONTENT_H_MM * mm - 14;   // cadangan supaya tidak loncat ke lembar ke-2
-            const prevMedia = sheet.media;
-            const prevBodyWidth = document.body.style.width;
-            const bodyHeight = () => document.body.getBoundingClientRect().height;
-
-            area.style.zoom = "";
-            sheet.media = "all";
-            document.body.style.width = (PRINT_CONTENT_W_MM * mm) + "px";
-
-            let scale = 1;
-            let h = bodyHeight();
-            if (h > maxH) {
-                scale = Math.max(PRINT_MIN_SCALE, Math.floor((maxH / h) * 100) / 100);
-                area.style.zoom = scale;
-                h = bodyHeight();
-                while (h > maxH && scale > PRINT_MIN_SCALE) {
-                    scale = Math.max(PRINT_MIN_SCALE, Math.round((scale - 0.01) * 100) / 100);
-                    area.style.zoom = scale;
-                    h = bodyHeight();
-                }
+        // ---------- QR lokal (tanpa internet, ikut masuk ke PDF) ----------
+        function showQr(imgId, placeholderId, text, level) {
+            const img = $id(imgId), ph = $id(placeholderId);
+            let ok = false;
+            if (text) {
+                try { img.src = QrCode.toDataUrl(text, { level: level, scale: 12, quiet: 2 }); ok = true; }
+                catch (err) { console.error("QR gagal dibuat:", err); }
             }
-
-            sheet.media = prevMedia;
-            document.body.style.width = prevBodyWidth;
-            return scale;
+            if (ok) {
+                ph.style.display = 'none';
+                img.style.display = 'block';
+                return img.decode ? img.decode().catch(() => null) : Promise.resolve();
+            }
+            img.style.display = 'none';
+            img.removeAttribute('src');
+            ph.style.display = 'flex';
+            return Promise.resolve();
         }
 
-        window.addEventListener('afterprint', () => {
-            const area = document.getElementById('printArea');
-            if (area) area.style.zoom = "";
-        });
-
-        function loadQrImage(img, url) {
-            return new Promise(resolve => {
-                img.onload = () => resolve(true);
-                img.onerror = () => resolve(false);
-                img.src = url;
-                if (img.complete && img.naturalWidth > 0) resolve(true);
-            });
-        }
-
-        function preparePrintLayout() {
-            const deptSelectVal = document.getElementById('selectKepada').value;
-            const finalKepada = deptSelectVal === 'LAINNYA' ? document.getElementById('inputKepada').value.trim() : deptSelectVal;
-
-            document.getElementById('targetMemoNo').innerText = cloudGeneratedMemoNo;
-            document.getElementById('targetMemoDate').innerText = `Kalijati, ${cloudGeneratedDateString}`;
-            
-            document.getElementById('targetKepada').innerText = finalKepada;
-            document.getElementById('targetAlamat').innerText = document.getElementById('inputAlamat').value;
-            document.getElementById('targetPenerima').innerText = document.getElementById('inputPenerima').value || "-";
-            document.getElementById('targetSubjek').innerText = document.getElementById('inputSubjek').value;
-            document.getElementById('targetLampiran').innerText = document.getElementById('inputLampiran').value || "-";
-            document.getElementById('targetDeptPengirim').innerText = document.getElementById('selectDeptPengirim').value || "-";
-
-            const targetImageBoxFrame = document.getElementById('targetImageBox');
-            if (attachmentBase64Data) {
-                document.getElementById('targetImgRender').src = attachmentBase64Data;
-                targetImageBoxFrame.style.display = 'block';
-            } else {
-                targetImageBoxFrame.style.display = 'none';
-            }
-
-            const jenisMemo = document.getElementById('selectJenisMemo').value;
-            let generatedItemCounter = 0;
-
-            if (jenisMemo === 'tulis') {
-                document.getElementById('printBodyPengadaan').style.display = 'none';
-                document.getElementById('printBodyTulis').style.display = 'block';
-
-                document.getElementById('targetKalimatPembuka').innerText = document.getElementById('inputKalimatPembuka').value;
-                document.getElementById('targetIsiMemo').innerText = document.getElementById('inputIsiMemo').value;
-                document.getElementById('targetKalimatPenutup').innerText = document.getElementById('inputKalimatPenutup').value;
-                
-                generatedItemCounter = 1; 
-            } else {
-                document.getElementById('printBodyPengadaan').style.display = 'block';
-                document.getElementById('printBodyTulis').style.display = 'none';
-
-                const printTableContentBody = document.getElementById('targetTableItemsBody');
-                printTableContentBody.innerHTML = "";
-                
-                document.getElementById('controlGridBody').querySelectorAll('tr').forEach(row => {
-                    const desc = row.querySelector('.item-desc-field').value.trim();
-                    const qty = row.querySelector('.item-qty-field').value;
-                    const unit = row.querySelector('.item-unit-field').value;
-                    
-                    if (desc) {
-                        generatedItemCounter++;
-                        printTableContentBody.innerHTML += `
-                            <tr>
-                                <td class="text-center">${generatedItemCounter}</td>
-                                <td class="text-left">${desc}</td>
-                                <td class="text-center">${qty} ${unit}</td>
-                            </tr>
-                        `;
-                    }
+        // Logo diubah ke data URL sekali, supaya ikut tergambar ke PDF
+        let logoDataUrl = "";
+        const logoReady = (async function () {
+            try {
+                const res = await fetch('MSB Logo.png');
+                if (!res.ok) throw new Error("logo tidak ditemukan");
+                const blob = await res.blob();
+                logoDataUrl = await new Promise((resolve, reject) => {
+                    const fr = new FileReader();
+                    fr.onload = () => resolve(fr.result);
+                    fr.onerror = reject;
+                    fr.readAsDataURL(blob);
                 });
+                document.querySelectorAll('#printArea .kop-logo').forEach(img => { img.src = logoDataUrl; });
+            } catch (err) {
+                console.warn("Logo tidak bisa dijadikan data URL (PDF mungkin tanpa logo):", err.message);
+            }
+        })();
 
-                let dynamicFillerQuota = 6 - generatedItemCounter;
-                for (let padIdx = 0; padIdx < dynamicFillerQuota; padIdx++) {
-                    printTableContentBody.innerHTML += `
-                        <tr>
-                            <td style="height: 22px;"></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    `;
+        // ---------- Render dokumen dari snapshot ----------
+        function setText(id, value) { const el = $id(id); if (el) el.textContent = value; }
+
+        function sizeAttachment(img) {
+            if (!img.naturalWidth || !img.naturalHeight) return;
+            const s = Math.min(140 / img.naturalWidth, 140 / img.naturalHeight);
+            img.style.width = Math.round(img.naturalWidth * s) + "px";
+            img.style.height = Math.round(img.naturalHeight * s) + "px";
+            img.style.objectFit = "fill";
+            img.style.maxHeight = "none";
+        }
+
+        function renderLiveDoc() {
+            const doc = liveDoc;
+            if (!doc) return Promise.resolve();
+            const ver = ++renderVersion;
+            const jobs = [logoReady];
+
+            setText('targetMemoNo', doc.memoNo);
+            setText('targetMemoDate', `Kalijati, ${doc.date || "-"}`);
+            setText('targetKepada', doc.kepada || "-");
+            setText('targetAlamat', doc.alamat || "");
+            setText('targetPenerima', doc.penerima || "-");
+            setText('targetSubjek', doc.subjek || "");
+            setText('targetLampiran', doc.lampiran || "-");
+            setText('targetDeptPengirim', doc.departemen || "-");
+            setText('liveMemoNo', doc.memoNo);
+
+            // Gambar lampiran
+            const imgBox = $id('targetImageBox'), imgEl = $id('targetImgRender');
+            if (doc.gambar) {
+                if (imgEl.getAttribute('src') !== doc.gambar) { imgEl.removeAttribute('style'); imgEl.src = doc.gambar; }
+                imgBox.style.display = 'block';
+                jobs.push((imgEl.decode ? imgEl.decode() : Promise.resolve()).then(() => sizeAttachment(imgEl)).catch(() => null));
+            } else {
+                imgBox.style.display = 'none';
+                imgEl.removeAttribute('src');
+                imgEl.removeAttribute('style');
+            }
+
+            // Isi memo
+            let itemCount = 0;
+            if (doc.jenis === 'tulis') {
+                $id('printBodyPengadaan').style.display = 'none';
+                $id('printBodyTulis').style.display = 'block';
+                setText('targetKalimatPembuka', doc.kalimatPembuka || "");
+                setText('targetIsiMemo', doc.isiMemo || "");
+                setText('targetKalimatPenutup', doc.kalimatPenutup || "");
+                itemCount = 1;
+            } else {
+                $id('printBodyPengadaan').style.display = 'block';
+                $id('printBodyTulis').style.display = 'none';
+                const tbody = $id('targetTableItemsBody');
+                tbody.textContent = "";
+                const addCell = (tr, cls, text) => {
+                    const td = document.createElement('td');
+                    if (cls) td.className = cls;
+                    td.textContent = text;
+                    tr.appendChild(td);
+                };
+                doc.items.forEach(item => {
+                    const desc = String(item.deskripsi == null ? "" : item.deskripsi).trim();
+                    if (!desc) return;
+                    itemCount++;
+                    const tr = document.createElement('tr');
+                    addCell(tr, 'text-center', String(itemCount));
+                    addCell(tr, 'text-left', desc);
+                    addCell(tr, 'text-center', `${item.qty} ${item.satuan}`);
+                    tbody.appendChild(tr);
+                });
+                for (let pad = itemCount; pad < 6; pad++) {          // baris kosong supaya tabel tidak terlalu pendek
+                    const tr = document.createElement('tr');
+                    const td = document.createElement('td');
+                    td.style.height = "22px";
+                    tr.appendChild(td);
+                    tr.appendChild(document.createElement('td'));
+                    tr.appendChild(document.createElement('td'));
+                    tbody.appendChild(tr);
                 }
             }
 
-            // Prepared By: memo baru = user yang login; cetak ulang = pembuat asli memo (kolom "Dibuat Oleh").
-            // Tanda tangan digitalnya diambil dari kolom "Digital Sign" sheet Login milik orang tersebut.
-            const preparer = (isReprintMode && currentPembuat && currentPembuat.nama) ? currentPembuat : authenticatedUserSession;
+            // Prepared By: pembuat memo; tanda tangan digitalnya dari kolom "Digital Sign" sheet Login
+            const preparer = doc.pembuat || {};
+            setText('labelNamaPrepared', preparer.nama || "-");
+            setText('labelJabatanPrepared', preparer.jabatan || "");
+            const signLink = String(preparer.digitalSign || "").trim();
+            jobs.push(showQr('qrCodeImgPrepared', 'preparedQrPlaceholder', /^https?:\/\//i.test(signLink) ? signLink : "", 'H'));
 
-            const antiForgeryHash = computeSecurityHashSignature(
-                cloudGeneratedMemoNo, 
-                preparer.nama, 
-                document.getElementById('inputSubjek').value,
-                generatedItemCounter
-            );
-            document.getElementById('targetSecurityHash').innerText = (isReprintMode ? "[REPRINTED] " : "") + antiForgeryHash;
-
-            // ----- Approval dari sheet (Detail Memo kolom G-K / Memo Tulis kolom E-I, hasil IMPORTRANGE)
-            const approval = (isReprintMode && currentApproval) ? currentApproval : { status: "", nama: "", tanggal: "", ttd: "" };
-            const ttdLink = String(approval.ttd || "").trim();
+            // Approved By: dari sheet (Detail Memo kolom G-K / Memo Tulis kolom E-I, hasil IMPORTRANGE)
+            const approval = doc.approval || emptyApproval();
             const state = classifyApproval(approval.status);
+            const ttdLink = String(approval.ttd || "").trim();
             const showApprovalQr = !!ttdLink && state !== 'rejected' && state !== 'pending';
-
             let headline = "Menunggu persetujuan";
             if (showApprovalQr) headline = "Disetujui secara digital oleh:";
             else if (state === 'rejected') headline = "Ditolak oleh:";
             else if (state === 'approved') headline = "Disetujui oleh:";
+            setText('labelApprovalHeadline', headline);
+            setText('labelNamaApproved', approval.nama || "-");
+            setText('labelStatusApproved', approval.status ? "Status: " + approval.status : "");
+            setText('labelWaktuApproved', approval.tanggal ? "Waktu: " + approval.tanggal : "");
+            jobs.push(showQr('qrCodeImgApproved', 'approvalQrPlaceholder', showApprovalQr ? ttdLink : "", 'H'));
 
-            document.getElementById('labelNamaPrepared').innerText = preparer.nama || "-";
-            document.getElementById('labelJabatanPrepared').innerText = preparer.jabatan || "";
-            document.getElementById('labelApprovalHeadline').innerText = headline;
-            document.getElementById('labelNamaApproved').innerText = approval.nama || "-";
-            document.getElementById('labelStatusApproved').innerText = approval.status ? "Status: " + approval.status : "";
-            document.getElementById('labelWaktuApproved').innerText = approval.tanggal ? "Waktu: " + approval.tanggal : "";
+            // QR validasi dokumen + hash
+            jobs.push(showQr('qrCodeImgValidasi', 'validationQrPlaceholder', validationLinkOf(doc), 'M'));
+            const hash = computeSecurityHashSignature(doc.memoNo, preparer.nama || "", doc.subjek, itemCount, doc.seed);
+            setText('targetSecurityHash', (doc.reprint ? "[REPRINTED] " : "") + hash);
 
-            const imgPreparedQr = document.getElementById('qrCodeImgPrepared');
-            const imgApprovedQr = document.getElementById('qrCodeImgApproved');
-            const qrPlaceholder = document.getElementById('approvalQrPlaceholder');
+            updateLiveBar();
 
-            const preparedSignLink = String(preparer.digitalSign || "").trim();
-            const preparedPlaceholder = document.getElementById('preparedQrPlaceholder');
-            const qrJobs = [];
+            // Setelah font, logo, QR dan gambar siap: pas-kan ke 1 halaman A4
+            docReady = Promise.all(jobs)
+                .then(() => (document.fonts && document.fonts.ready) || null)
+                .then(() => { if (ver === renderVersion) fitDoc(); })
+                .catch(err => console.error("Render dokumen:", err));
 
-            if (/^https?:\/\//i.test(preparedSignLink)) {
-                preparedPlaceholder.style.display = 'none';
-                imgPreparedQr.style.display = 'block';
-                qrJobs.push(loadQrImage(imgPreparedQr, QR_API_URL + encodeURIComponent(preparedSignLink)));
-            } else {
-                imgPreparedQr.style.display = 'none';
-                imgPreparedQr.removeAttribute('src');
-                preparedPlaceholder.style.display = 'flex';
+            if (choiceOpen) prepareShareFile();      // dokumen berubah (mis. baru di-approve): siapkan PDF baru
+            return docReady;
+        }
+
+        // ---------- Pas 1 halaman A4 ----------
+        // Isi (#docFit) diskalakan sampai tingginya muat di kotak isi 180 x 270 mm. Lebar layout dilebarkan
+        // sebesar 1/skala supaya teks tetap tertata sama seperti zoom; dokumen pendek tidak diubah (skala 1).
+        function fitDoc() {
+            const fit = $id('docFit');
+            if (!fit || !fit.offsetParent) return fitInfo;     // panel sedang tersembunyi: belum bisa diukur
+            const limit = FIT_H_PX - 3;                         // cadangan supaya tidak loncat ke halaman ke-2
+            const heightAt = (s) => { fit.style.width = (FIT_W_PX / s) + "px"; return fit.offsetHeight * s; };
+
+            fit.style.transform = "";
+            let scale = 1, overflow = false;
+            if (heightAt(1) > limit) {
+                let lo = FIT_MIN_SCALE, hi = 1;
+                if (heightAt(lo) > limit) {
+                    scale = lo; overflow = true;
+                } else {
+                    for (let i = 0; i < 14; i++) {
+                        const mid = (lo + hi) / 2;
+                        if (heightAt(mid) <= limit) lo = mid; else hi = mid;
+                    }
+                    scale = Math.floor(lo * 1000) / 1000;
+                }
+            }
+            fit.style.width = (FIT_W_PX / scale) + "px";
+            fit.style.transform = scale < 1 ? `scale(${scale})` : "";
+            fitInfo = { scale: scale, overflow: overflow };
+            updateLiveBar();
+            return fitInfo;
+        }
+
+        // Tampilan di layar: kertas dikecilkan (transform) bila panel lebih sempit dari 210 mm
+        function updatePreviewScale() {
+            const stage = $id('docStage'), frame = $id('docFrame'), scaler = $id('docScaler');
+            if (!stage || !frame || !scaler || !stage.offsetParent) return;
+            const cs = getComputedStyle(stage);
+            const avail = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+            if (avail <= 0) return;
+            const k = Math.min(1, avail / SHEET_W_PX);
+            previewScale = k;
+            frame.style.width = (SHEET_W_PX * k) + "px";
+            frame.style.height = (SHEET_H_PX * k) + "px";
+            scaler.style.transform = k < 1 ? `scale(${k})` : "";
+        }
+
+        if (window.ResizeObserver) {
+            new ResizeObserver(() => updatePreviewScale()).observe($id('docStage'));
+        } else {
+            window.addEventListener('resize', updatePreviewScale);
+        }
+        if (document.fonts && document.fonts.addEventListener) {
+            document.fonts.addEventListener('loadingdone', () => { if (liveDoc) fitDoc(); });
+        }
+
+        // ---------- Tampilkan / tutup Dokumen Live ----------
+        function showLiveDoc(scrollIntoView) {
+            if (!liveDoc) return;
+            ensurePdfLibs().catch(() => null);             // pustaka PDF dimuat lebih dulu di latar belakang
+            $id('livePanel').classList.add('live-active');
+            updatePreviewScale();
+            renderLiveDoc();
+            updatePreviewScale();
+            startLivePoll();
+            if (scrollIntoView) {
+                setTimeout(() => $id('livePanel').scrollIntoView({ behavior: 'smooth', block: 'start' }), 120);
+            }
+        }
+
+        function closeLiveDoc() {
+            stopLivePoll();
+            closePrintChoice();
+            liveDoc = null;
+            renderVersion++;
+            pdfCache = { version: -1, file: null, promise: null, error: null };
+            const panel = $id('livePanel');
+            if (panel) panel.classList.remove('live-active');
+        }
+
+        // ---------- Bilah status approval ----------
+        function pollInterval() {
+            const t = Date.now() - livePoll.startedAt;
+            let d = t < 180000 ? 8000 : (t < 900000 ? 15000 : 30000);
+            return livePoll.legacy ? d * 2 : d;
+        }
+
+        function updateLiveBar() {
+            const bar = $id('liveStatusBar');
+            if (!bar) return;
+            if (!liveDoc) { bar.textContent = ""; return; }
+
+            const st = approvalState(liveDoc);
+            const a = liveDoc.approval || emptyApproval();
+            let cls = 'waiting', icon = '⏳', title = 'Menunggu persetujuan', sub = null;
+            if (st === 'approved') {
+                cls = 'approved'; icon = '✅';
+                title = 'Disetujui oleh ' + (a.nama || '-');
+                sub = a.tanggal || 'Dokumen sudah memuat tanda tangan digital approval.';
+            } else if (st === 'approved_nottd') {
+                icon = '✍️';
+                title = 'Disetujui oleh ' + (a.nama || '-') + ', menunggu tanda tangan digital';
+            } else if (st === 'rejected') {
+                cls = 'rejected'; icon = '❌';
+                title = 'Ditolak' + (a.nama ? ' oleh ' + a.nama : '');
+                sub = a.tanggal || '';
             }
 
-            if (showApprovalQr) {
-                qrPlaceholder.style.display = 'none';
-                imgApprovedQr.style.display = 'block';
-                qrJobs.push(loadQrImage(imgApprovedQr, QR_API_URL + encodeURIComponent(ttdLink)));
-            } else {
-                imgApprovedQr.style.display = 'none';
-                imgApprovedQr.removeAttribute('src');
-                qrPlaceholder.style.display = 'flex';
+            if (sub === null) {
+                if (livePoll.stopped) {
+                    sub = 'Pemantauan otomatis berhenti. Klik "Cek Approval" untuk memeriksa lagi.';
+                } else if (livePoll.inFlight) {
+                    sub = 'Memeriksa status approval...';
+                } else {
+                    sub = 'Dicek otomatis tiap ' + Math.round(pollInterval() / 1000) + ' detik, dokumen akan langsung berubah begitu di-approve.';
+                    if (livePoll.lastCheck) sub += ' Terakhir: ' + livePoll.lastCheck.toLocaleTimeString('id-ID');
+                }
             }
 
-            // ----- QR Validasi Dokumen: dari kolom "Link Validasi" milik nomor memo ini
-            const validationLink = (isReprintMode && currentValidationLink) ? currentValidationLink : buildValidationLink(cloudGeneratedMemoNo);
-            qrJobs.push(loadQrImage(document.getElementById('qrCodeImgValidasi'), VALIDATION_QR_API_URL + encodeURIComponent(validationLink)));
-
-            // Gambar lampiran harus sudah ter-decode sebelum tinggi dokumen diukur
-            if (attachmentBase64Data) {
-                const attachImg = document.getElementById('targetImgRender');
-                if (attachImg && attachImg.decode) qrJobs.push(attachImg.decode().catch(() => null));
+            bar.className = 'live-bar ' + cls + (Date.now() < livePoll.flashUntil ? ' flash' : '');
+            bar.textContent = "";
+            const ic = document.createElement('div'); ic.className = 'lb-icon'; ic.textContent = icon;
+            const body = document.createElement('div');
+            const t = document.createElement('div'); t.className = 'lb-title'; t.textContent = title;
+            const s = document.createElement('div'); s.className = 'lb-sub';
+            if (!isFinalState(liveDoc) && !livePoll.stopped) {
+                const dot = document.createElement('span'); dot.className = 'live-dot'; s.appendChild(dot);
             }
+            s.appendChild(document.createTextNode(sub));
+            body.appendChild(t); body.appendChild(s);
+            if (livePoll.error) {
+                const e = document.createElement('div'); e.className = 'lb-sub'; e.style.color = '#b45309';
+                e.textContent = '⚠️ ' + livePoll.error + ' (akan dicoba lagi)';
+                body.appendChild(e);
+            }
+            const chip = document.createElement('div'); chip.className = 'lb-chip';
+            chip.textContent = fitInfo.overflow ? '⚠️ Isi terlalu panjang' : ('A4 · 1 halaman · skala ' + Math.round(fitInfo.scale * 100) + '%');
+            bar.appendChild(ic); bar.appendChild(body); bar.appendChild(chip);
+        }
 
-            // Cetak tepat 1x setelah semua QR selesai dimuat (berhasil atau gagal), dipas ke 1 lembar
-            Promise.all(qrJobs).then(() => {
-                fitPrintToOnePage();
-                setTimeout(() => window.print(), 450);
+        // ---------- Pemantauan approval (otomatis, tanpa ke halaman Cetak Ulang) ----------
+        function startLivePoll() {
+            stopLivePoll();
+            livePoll.startedAt = Date.now();
+            livePoll.error = '';
+            livePoll.stopped = false;
+            livePoll.lastCheck = null;
+            updateLiveBar();
+            schedulePoll(isFinalState(liveDoc) ? null : undefined);
+        }
+
+        function stopLivePoll() {
+            clearTimeout(livePoll.timer);
+            livePoll.timer = null;
+        }
+
+        function schedulePoll(delay) {
+            clearTimeout(livePoll.timer);
+            livePoll.timer = null;
+            if (delay === null || !liveDoc || isFinalState(liveDoc)) return;
+            if (Date.now() - livePoll.startedAt > 6 * 3600 * 1000) {      // sesi login maksimal 6 jam
+                livePoll.stopped = true;
+                updateLiveBar();
+                return;
+            }
+            livePoll.timer = setTimeout(() => pollOnce(false), delay === undefined ? pollInterval() : delay);
+        }
+
+        function pollNow() {
+            if (!liveDoc) return;
+            livePoll.stopped = false;
+            livePoll.startedAt = livePoll.startedAt || Date.now();
+            pollOnce(true);
+        }
+
+        function fetchJson(url) {
+            return fetch(url, { cache: 'no-store' }).then(r => {
+                if (!r.ok) throw new Error("HTTP " + r.status);
+                return r.json();
             });
+        }
+
+        // Ambil data satu memo dari server. Code.gs baru: ?action=memo&no=...; Code.gs lama membalas riwayat (array),
+        // dalam hal itu dipakai riwayat 50 memo terakhir.
+        async function fetchMemoRemote(memoNo) {
+            const bust = "&_=" + Date.now();
+            if (!livePoll.legacy) {
+                const res = await fetchJson(APPS_SCRIPT_WEBAPP_URL + "?action=memo&no=" + encodeURIComponent(memoNo) + bust);
+                if (Array.isArray(res)) {
+                    livePoll.legacy = true;
+                    return res.find(m => m._memoNo === memoNo) || null;
+                }
+                if (res && res.status === "success") return res.memo || null;
+                throw new Error((res && res.message) || "Respons server tidak dikenali");
+            }
+            const list = await fetchJson(APPS_SCRIPT_WEBAPP_URL + "?_=" + Date.now());
+            if (!Array.isArray(list)) throw new Error((list && list.message) || "Respons server tidak dikenali");
+            return list.find(m => m._memoNo === memoNo) || null;
+        }
+
+        async function pollOnce(manual) {
+            if (livePoll.inFlight || !liveDoc) return;
+            if (!manual && document.hidden) return;        // tab tidak terlihat: lanjut saat tab dibuka lagi
+            const doc = liveDoc;
+            livePoll.inFlight = true;
+            updateLiveBar();
+            try {
+                const memo = await fetchMemoRemote(doc.memoNo);
+                if (doc !== liveDoc) return;               // dokumen sudah berganti selama menunggu
+                livePoll.error = '';
+                livePoll.lastCheck = new Date();
+                if (memo) {
+                    applyServerMemo(memo);
+                    if (manual && !isFinalState(liveDoc)) toast('Belum ada approval untuk ' + doc.memoNo + '.');
+                } else if (manual) {
+                    toast('Memo ' + doc.memoNo + ' belum ditemukan di server.', 'err');
+                }
+            } catch (err) {
+                if (doc === liveDoc) livePoll.error = err.message || "gagal terhubung";
+            } finally {
+                livePoll.inFlight = false;
+                if (doc === liveDoc) { updateLiveBar(); schedulePoll(); }
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && liveDoc && !isFinalState(liveDoc) && !livePoll.stopped) pollOnce(false);
+        });
+
+        function applyServerMemo(memo) {
+            const doc = liveDoc;
+            const prevState = approvalState(doc);
+            const before = JSON.stringify([doc.approval, doc.linkValidasi, doc.pembuat]);
+
+            doc.approval = normalizeApproval(memo.approval);
+            const link = String(memo.linkValidasi || "").trim();
+            if (link) doc.linkValidasi = link;
+            const p = memo.pembuat || {};
+            if (p.nama && (!doc.pembuat.nama || p.nama === doc.pembuat.nama)) {
+                doc.pembuat = {
+                    nama: p.nama,
+                    jabatan: p.jabatan || doc.pembuat.jabatan || "",
+                    digitalSign: p.digitalSign || doc.pembuat.digitalSign || ""
+                };
+            }
+
+            if (JSON.stringify([doc.approval, doc.linkValidasi, doc.pembuat]) === before) return;
+
+            const nowState = approvalState(doc);
+            renderLiveDoc();                               // dokumen live langsung berubah
+            if (nowState !== prevState) {
+                if (nowState === 'approved') {
+                    livePoll.flashUntil = Date.now() + 4000;
+                    toast('✅ ' + doc.memoNo + ' disetujui oleh ' + (doc.approval.nama || '-') + '. Dokumen sudah diperbarui.', 'ok', 6000);
+                    setTimeout(updateLiveBar, 4100);
+                } else if (nowState === 'rejected') {
+                    toast('❌ ' + doc.memoNo + ' ditolak' + (doc.approval.nama ? ' oleh ' + doc.approval.nama : '') + '.', 'err', 6000);
+                }
+                updateLiveBar();
+            }
+        }
+
+        // ---------- Toast ----------
+        function toast(message, kind, ms) {
+            const host = $id('toastHost');
+            if (!host) return;
+            const el = document.createElement('div');
+            el.className = 'toast' + (kind ? ' ' + kind : '');
+            el.textContent = message;
+            host.appendChild(el);
+            setTimeout(() => { el.style.transition = 'opacity .3s'; el.style.opacity = '0'; setTimeout(() => el.remove(), 320); }, ms || 3800);
+        }
+
+        // ---------- Cetak: nama file PDF otomatis lewat judul halaman ----------
+        window.addEventListener('beforeprint', () => {
+            if (!liveDoc) return;
+            fitDoc();
+            if (titleBackup === null) titleBackup = document.title;
+            document.title = buildFileBase(liveDoc);       // nama file bawaan saat "Simpan sebagai PDF"
+        });
+        window.addEventListener('afterprint', () => {
+            if (titleBackup !== null) { document.title = titleBackup; titleBackup = null; }
+        });
+
+        async function printDocument() {
+            if (!liveDoc) return;
+            try { await docReady; } catch (e) { /* lanjut */ }
+            fitDoc();
+            window.print();
+        }
+
+        // ---------- Pilihan: Cetak / WhatsApp / Unduh ----------
+        function openPrintChoice() {
+            if (!liveDoc) {
+                alert("Peringatan: Harap simpan data (Buat Baru) atau pilih riwayat dokumen (Cetak Ulang) terlebih dahulu.");
+                return;
+            }
+            choiceOpen = true;
+            $id('choiceFileName').textContent = buildFileName(liveDoc);
+            $id('choiceModal').classList.remove('hidden');
+            prepareShareFile();                            // PDF disiapkan di latar belakang selagi pengguna memilih
+        }
+
+        function closePrintChoice() {
+            choiceOpen = false;
+            const m = $id('choiceModal');
+            if (m) m.classList.add('hidden');
+        }
+
+        function choosePrint() {
+            closePrintChoice();
+            setTimeout(printDocument, 80);
+        }
+
+        function setChoiceState(state, message) {
+            const wa = $id('choiceWa'), hint = $id('choiceWaHint'), err = $id('choiceError');
+            err.classList.add('hidden');
+            hint.textContent = "";
+            if (state === 'busy') {
+                wa.disabled = true;
+                const sp = document.createElement('span'); sp.className = 'spinner';
+                hint.appendChild(sp);
+                hint.appendChild(document.createTextNode('Menyiapkan PDF...'));
+            } else if (state === 'ready') {
+                wa.disabled = false;
+                hint.textContent = message;
+            } else {
+                wa.disabled = false;
+                hint.textContent = 'PDF gagal disiapkan. Ketuk untuk mencoba lagi.';
+                err.textContent = message + ' Anda tetap bisa memakai opsi "Cetak / Simpan sebagai PDF".';
+                err.classList.remove('hidden');
+            }
+        }
+
+        // ---------- PDF (html2canvas + jsPDF, dimuat saat dibutuhkan) ----------
+        const PDF_LIBS = {
+            html2canvas: {
+                ready: () => typeof window.html2canvas === 'function',
+                urls: ["https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js",
+                       "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"]
+            },
+            jspdf: {
+                ready: () => !!(window.jspdf && window.jspdf.jsPDF),
+                urls: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js",
+                       "https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"]
+            }
+        };
+        const libPromises = {};
+
+        function loadScriptFrom(lib) {
+            return lib.urls.reduce((chain, url) => chain.catch(() => new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = url;
+                s.async = true;
+                s.onload = () => lib.ready() ? resolve() : reject(new Error("pustaka tidak aktif"));
+                s.onerror = () => { s.remove(); reject(new Error("gagal memuat " + url)); };
+                document.head.appendChild(s);
+            })), Promise.reject(new Error("mulai")));
+        }
+
+        function ensurePdfLibs() {
+            return Promise.all(Object.keys(PDF_LIBS).map(name => {
+                const lib = PDF_LIBS[name];
+                if (lib.ready()) return Promise.resolve();
+                if (!libPromises[name]) {
+                    libPromises[name] = loadScriptFrom(lib).catch(() => {
+                        libPromises[name] = null;
+                        throw new Error("Pustaka PDF tidak bisa dimuat (periksa koneksi internet).");
+                    });
+                }
+                return libPromises[name];
+            }));
+        }
+
+        // Posisi elemen di dalam kertas dalam mm (untuk tautan yang bisa diklik di PDF)
+        function rectInSheetMm(el, sheet) {
+            const r = el.getBoundingClientRect(), s = sheet.getBoundingClientRect();
+            const k = s.width / sheet.offsetWidth || 1;           // skala tampilan layar saat ini
+            const pxToMm = 25.4 / 96;
+            return { x: (r.left - s.left) / k * pxToMm, y: (r.top - s.top) / k * pxToMm, w: r.width / k * pxToMm, h: r.height / k * pxToMm };
+        }
+
+        async function buildPdfFile() {
+            const doc = liveDoc;
+            if (!doc) throw new Error("Tidak ada dokumen.");
+            await ensurePdfLibs();
+            try { await docReady; } catch (e) { /* lanjut */ }
+            if (document.fonts && document.fonts.ready) await document.fonts.ready;
+            fitDoc();
+
+            const sheet = $id('printArea');
+            const links = [];
+            [['qrCodeImgPrepared', doc.pembuat && doc.pembuat.digitalSign],
+             ['qrCodeImgApproved', doc.approval && doc.approval.ttd],
+             ['qrCodeImgValidasi', validationLinkOf(doc)]].forEach(([id, url]) => {
+                const img = $id(id);
+                if (img && img.style.display !== 'none' && /^https?:\/\//i.test(String(url || ''))) {
+                    links.push({ rect: rectInSheetMm(img, sheet), url: String(url).trim() });
+                }
+            });
+
+            const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+            const canvas = await window.html2canvas(sheet, {
+                scale: touch ? 2.5 : 3,
+                backgroundColor: '#ffffff',
+                useCORS: true,
+                logging: false,
+                scrollX: 0,
+                scrollY: 0,
+                windowWidth: 1280,
+                windowHeight: 900,
+                onclone: (clonedDoc) => {
+                    // Kertas dipindah ke akar dokumen salinan supaya bebas dari skala/animasi panel layar
+                    const clonedSheet = clonedDoc.getElementById('printArea');
+                    const holder = clonedDoc.createElement('div');
+                    holder.style.cssText = "position:absolute;left:0;top:0;width:210mm;height:296mm;margin:0;padding:0;background:#fff;z-index:2147483647;";
+                    clonedDoc.body.appendChild(holder);
+                    holder.appendChild(clonedSheet);
+                    clonedSheet.style.boxShadow = "none";
+                }
+            });
+
+            let imgData;
+            try { imgData = canvas.toDataURL('image/jpeg', 0.94); }
+            catch (err) { throw new Error("Gambar dokumen diblokir browser (logo dari domain lain?)."); }
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait', compress: true });
+            pdf.setProperties({
+                title: buildFileBase(doc),
+                subject: doc.subjek || "Memo",
+                author: (doc.pembuat && doc.pembuat.nama) || "PT Murinda Sentra Baja",
+                creator: "MSB e-Memo"
+            });
+            pdf.addImage(imgData, 'JPEG', 0, 0, 210, 296, undefined, 'FAST');
+            links.forEach(l => { try { pdf.link(l.rect.x, l.rect.y, l.rect.w, l.rect.h, { url: l.url }); } catch (e) { /* abaikan */ } });
+
+            const blob = pdf.output('blob');
+            return new File([blob], buildFileName(doc), { type: 'application/pdf' });
+        }
+
+        // PDF dibuat sekali per versi dokumen (di-cache), supaya tombol WhatsApp bisa langsung membagikan
+        // dalam gestur klik pengguna (syarat Web Share API di Safari/Chrome).
+        function ensurePdf() {
+            if (pdfCache.version === renderVersion && pdfCache.promise) return pdfCache.promise;
+            const ver = renderVersion;
+            const entry = { version: ver, file: null, error: null, promise: null };
+            entry.promise = buildPdfFile().then(file => {
+                entry.file = file;
+                return file;
+            }).catch(err => {
+                entry.error = err;
+                if (pdfCache === entry) pdfCache = { version: -1, file: null, promise: null, error: err };
+                throw err;
+            });
+            pdfCache = entry;
+            return entry.promise;
+        }
+
+        function prepareShareFile() {
+            if (!liveDoc) return;
+            setChoiceState('busy');
+            const ver = renderVersion;
+            ensurePdf().then(file => {
+                if (!choiceOpen || ver !== renderVersion) return;
+                const canShare = !!(navigator.canShare && navigator.share && navigator.canShare({ files: [file] }));
+                setChoiceState('ready', canShare
+                    ? 'Pilih WhatsApp di menu bagikan, PDF langsung terlampir.'
+                    : 'PDF diunduh lalu WhatsApp dibuka, tinggal lampirkan file ke chat.');
+            }).catch(err => {
+                if (choiceOpen && ver === renderVersion) setChoiceState('error', err.message || "Terjadi kesalahan.");
+            });
+        }
+
+        function buildShareText(doc) {
+            const st = approvalState(doc), a = doc.approval || emptyApproval();
+            let status = '⏳ Menunggu persetujuan';
+            if (st === 'approved' || st === 'approved_nottd') status = '✅ Disetujui oleh ' + (a.nama || '-') + (a.tanggal ? ' (' + a.tanggal + ')' : '');
+            else if (st === 'rejected') status = '❌ Ditolak' + (a.nama ? ' oleh ' + a.nama : '');
+            return [
+                '*MEMO ' + doc.memoNo + '*',
+                'Kepada  : ' + (doc.kepada || '-'),
+                'Dari    : ' + (doc.departemen || '-'),
+                'Perihal : ' + (doc.subjek || '-'),
+                'Tanggal : ' + (doc.date || '-'),
+                'Status  : ' + status,
+                '',
+                'Cek keaslian dokumen: ' + validationLinkOf(doc)
+            ].join('\n');
+        }
+
+        function downloadFile(file) {
+            const url = URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = file.name;
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 15000);
+        }
+
+        function shareToWhatsApp() {
+            if (!liveDoc) return;
+            const file = (pdfCache.version === renderVersion) ? pdfCache.file : null;
+            if (!file) { prepareShareFile(); return; }                // belum siap / gagal sebelumnya: coba lagi
+            const text = buildShareText(liveDoc);
+
+            // Dipanggil langsung dari klik (tanpa await) supaya lolos aturan gestur pengguna
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({ files: [file], title: file.name, text: text })
+                    .then(() => closePrintChoice())
+                    .catch(err => { if (!err || err.name !== 'AbortError') whatsappFallback(file, text); });
+                return;
+            }
+            whatsappFallback(file, text);
+        }
+
+        // Browser desktop tanpa berbagi file: unduh PDF lalu buka WhatsApp dengan teks siap kirim
+        function whatsappFallback(file, text) {
+            downloadFile(file);
+            window.open('https://wa.me/?text=' + encodeURIComponent(text + '\n\n📎 Lampiran: ' + file.name), '_blank', 'noopener');
+            toast('PDF ' + file.name + ' diunduh. Lampirkan file itu ke chat WhatsApp yang terbuka.', 'ok', 7000);
+            closePrintChoice();
+        }
+
+        async function downloadPdf() {
+            if (!liveDoc) return;
+            const btn = $id('choiceDownload');
+            btn.disabled = true;
+            try {
+                const file = await ensurePdf();
+                downloadFile(file);
+                toast('PDF diunduh: ' + file.name, 'ok');
+                closePrintChoice();
+            } catch (err) {
+                setChoiceState('error', err.message || "Terjadi kesalahan.");
+            } finally {
+                btn.disabled = false;
+            }
         }
 
         // Muat daftar personel login saat halaman dibuka
