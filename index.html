@@ -2117,12 +2117,18 @@ const QrCode = (function () {
 
         function subjLower(s) {
             s = String(s || "").replace(/^\s*(perihal|subject)\s*:\s*/i, "").replace(/\s+/g, " ").trim().replace(/[.\s]+$/, "");
-            return s.split(" ").map(w => (/^[A-Z0-9&\/()\-]{2,}$/.test(w) ? w : w.toLowerCase())).join(" ")
+            const shout = s !== "" && s === s.toUpperCase();      // perihal ditulis kapital semua
+            return s.split(" ").map(w => {
+                if (/\d/.test(w)) return w;                       // kode / ukuran, mis. DB25
+                if (/^[A-Z0-9&\/()\-]{2,}$/.test(w) && (!shout || w.replace(/[^A-Z]/g, "").length <= 3)) return w;   // singkatan, mis. ATK
+                return w.toLowerCase();
+            }).join(" ")
                 .replace(/\b(januari|februari|maret|april|mei|juni|juli|agustus|september|oktober|november|desember|senin|selasa|rabu|kamis|jumat|sabtu)\b/g, m => m.charAt(0).toUpperCase() + m.slice(1));
         }
         function titleCase(s) {
-            return String(s || "").toLowerCase().replace(/(^|[\s\-\/(])([a-z])/g, (m, a, b) => a + b.toUpperCase());
+            return String(s || "").split(/(\s+|[-\/(])/).map(w => /^[A-Z]{2,3}$/.test(w) ? w : w.toLowerCase().replace(/^[a-z]/, m => m.toUpperCase())).join("");
         }
+
         // Jenis keperluan yang dikenali dari perihal / uraian memo (urutan = prioritas)
         const CAT_RULES = [
             ['absen', /lupa (absen|presensi|scan|finger)|tidak (absen|scan|finger)|koreksi (absen|presensi|kehadiran)|absensi|presensi|finger ?print/],
@@ -2137,10 +2143,18 @@ const QrCode = (function () {
             if (i < 0) return 'req';
             return r <= i ? 'req' : 'info';
         }
-        function itemPhrase(items) {
+        function itemPhrase(items, subj) {
             const names = (items || []).map(i => String(i.deskripsi == null ? "" : i.deskripsi).trim()).filter(Boolean)
                 .map(n => n.replace(/^([A-Z])([a-z])/, (m, a, b) => a.toLowerCase() + b));
             if (!names.length) return "";
+            // Barang yang sudah tersebut di perihal tidak diulang lagi di kalimat pembuka
+            const nz = t => String(t || "").toLowerCase().replace(/×/g, "x").replace(/[^a-z0-9]/g, "");
+            const sn = nz(subj);
+            if (names.every(n => sn.indexOf(nz(n)) > -1)) return "";
+            if (names.length === 1) {
+                const w = (names[0].match(/[A-Za-z]{4,}/) || [""])[0].toLowerCase();
+                if (w && sn.indexOf(w) > -1) return "";
+            }
             const head = names.slice(0, 3);
             if (head.every(n => n.length <= 40)) {
                 let t = head.length > 1 ? head.slice(0, -1).join(", ") + " dan " + head[head.length - 1] : head[0];
@@ -2152,16 +2166,17 @@ const QrCode = (function () {
         function composeMemoText(doc) {
             const tulis = doc.jenis === 'tulis';
             const subj = subjLower(doc.subjek);
+            const sl = subj.toLowerCase();
             const dari = String(doc.departemen || "").trim();
             const kpd = titleCase(doc.kepada || "");
             const cat = doc.kategori || (tulis ? (memoCategory(subj) || memoCategory(doc.isiMemo) || 'umum')
                                                : (memoCategory(subj) === 'pinjam' ? 'pinjam' : 'req'));
             const lingkup = dari ? " di lingkungan " + dari : "";
-            const kata = /^(pengajuan|permohonan|permintaan)/.test(subj) ? "menyampaikan " : "mengajukan ";
+            const kata = /^(pengajuan|permohonan|permintaan)/.test(sl) ? "menyampaikan " : "mengajukan ";
             const SALAM = "Dengan hormat,\n\n";
             const TERIMA_KASIH = "Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih.";
             const rincian = tulis ? "uraian" : "rincian";
-            const barang = tulis ? "" : itemPhrase(doc.items);
+            const barang = tulis ? "" : itemPhrase(doc.items, subj);
 
             if (cat === 'absen') {
                 return {
@@ -2170,8 +2185,8 @@ const QrCode = (function () {
                 };
             }
             if (cat === 'pinjam') {
-                const inti = subj.replace(/^(meminjam|pinjam)\s+/, "");
-                const pinjam = !subj ? "peminjaman material" : (/peminjaman/.test(subj) ? subj : "peminjaman " + inti);
+                const inti = subj.replace(/^(meminjam|pinjam)\s+/i, "");
+                const pinjam = !subj ? "peminjaman material" : (/peminjaman/.test(sl) ? subj : "peminjaman " + inti);
                 return {
                     pembuka: SALAM + "Sehubungan dengan kebutuhan operasional" + lingkup + ", bersama ini kami " + kata + pinjam + barang + ", dengan " + rincian + " sebagai berikut:",
                     penutup: "Demikian " + pinjam + " ini kami sampaikan. Barang yang dipinjam akan kami gunakan sesuai keperluan dan dikembalikan dalam kondisi baik setelah selesai digunakan. Mohon kiranya dapat disetujui" + (kpd ? " oleh " + kpd : "") + ". " + TERIMA_KASIH
@@ -2179,7 +2194,7 @@ const QrCode = (function () {
             }
             if (cat === 'req') {
                 const ajuan = !subj ? (tulis ? "permohonan" : "permohonan pengadaan barang")
-                    : (REQ_RE.test(subj) ? subj : (tulis ? "permohonan mengenai " : "permohonan pengadaan ") + subj);
+                    : (REQ_RE.test(sl) ? subj : (tulis ? "permohonan mengenai " : "permohonan pengadaan ") + subj);
                 return {
                     pembuka: SALAM + "Sehubungan dengan kebutuhan operasional" + lingkup + ", bersama ini kami " + kata + ajuan + barang + ", dengan " + rincian + " sebagai berikut:",
                     penutup: "Demikian " + ajuan + " ini kami sampaikan. Mohon kiranya dapat disetujui dan ditindaklanjuti" +
@@ -2187,7 +2202,7 @@ const QrCode = (function () {
                 };
             }
             if (cat === 'info') {
-                const info = !subj ? "informasi berikut" : (INFO_RE.test(subj) ? subj : "informasi mengenai " + subj);
+                const info = !subj ? "informasi berikut" : (INFO_RE.test(sl) ? subj : "informasi mengenai " + subj);
                 return {
                     pembuka: SALAM + "Bersama ini kami sampaikan " + info + ", dengan uraian sebagai berikut:",
                     penutup: "Demikian " + info + " ini kami sampaikan. " + TERIMA_KASIH
